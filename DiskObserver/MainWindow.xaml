@@ -10,11 +10,17 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <view:DisksViewer Grid.Column="0"/>
-        <GridSplitter Grid.Column="1"/>
+
+        <GridSplitter Grid.Column="1" BorderBrush="Black" 
+                      BorderThickness="1"
+                      ShowsPreview="False"
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+
+        <view:PhysicalObjectsView Grid.Column="2" DataContext="{Binding SelectedPhysicalDisk}"/>
     </Grid>
 </Window>
