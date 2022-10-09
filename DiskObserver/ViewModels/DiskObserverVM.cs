@@ -1,4 +1,5 @@
-﻿using DiskObserver.Model;
+﻿using DiskObserver.Model.Implementation;
+using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
 using System;
 using System.Collections.ObjectModel;
@@ -7,18 +8,28 @@ using System.IO;
 namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
 
-        public ObservableCollection<PhysicalDisk> PhysicalDisks { get; set; } = new();
+        public ObservableCollection<IPhysicalDisk> PhysicalDisks { get; set; } = new();
+
+        private IPhysicalDisk _selectedPhysicalDisk;
+        public IPhysicalDisk SelectedPhysicalDisk {
+            get => _selectedPhysicalDisk;
+            set
+            {
+                _selectedPhysicalDisk = value;
+                OnPropertyChanged(nameof(SelectedPhysicalDisk));
+            }
+        }
 
         public DiskObserverVM() {
 
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo driveInfo in drives) {
-                PhysicalDisks.Add(new(driveInfo));
+                PhysicalDisks.Add(new PhysicalDisk(driveInfo));
             }
         }
 
         public void Dispose() {
-            foreach (PhysicalDisk physicalDisk in PhysicalDisks)
+            foreach (IPhysicalDisk physicalDisk in PhysicalDisks)
                 physicalDisk.Dispose();
 
             PhysicalDisks.Clear();

@@ -1,11 +1,16 @@
-﻿using DiskObserver.Utils;
+﻿using DiskObserver.Model.Interface;
+using DiskObserver.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 
 #nullable enable
 
-namespace DiskObserver.Model {
-    public sealed class PhysicalDisk : BaseModel, IDisposable {
+namespace DiskObserver.Model.Implementation {
+    public sealed class PhysicalDisk : BaseModel, IPhysicalDisk {
+
+        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
 
         string _name = "";
         public string Name {
@@ -67,11 +72,30 @@ namespace DiskObserver.Model {
                 Format = driveInfo.DriveFormat;
                 TotalMemory = driveInfo.TotalSize;
                 FreeMemory = driveInfo.AvailableFreeSpace;
+                LoadInfo();
             }
         }
 
         public void Dispose() {
             _driveInfo = null;
+
+            foreach(IPhysicalObject physicalObject in PhysicalObjects) {
+                physicalObject.Dispose();
+            }
+
+            PhysicalObjects.Clear();
+        }
+
+        public async void LoadInfo() {
+            foreach (DirectoryInfo directoryInfo in _driveInfo.RootDirectory.GetDirectories()) {
+                await Task.Run(() => {
+                    PhysicalObjects.Add(new DirectoryModel(directoryInfo));
+                });
+            }
+
+            foreach (FileInfo fileInfo in _driveInfo.RootDirectory.GetFiles()) {
+                    PhysicalObjects.Add(new FileModel(fileInfo));
+            }
         }
 
         public void RefreshProperty() {
