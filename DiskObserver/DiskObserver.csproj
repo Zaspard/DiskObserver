@@ -8,9 +8,4 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="View\" />
-  </ItemGroup>
-
 </Project>
