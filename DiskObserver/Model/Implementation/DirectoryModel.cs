@@ -11,7 +11,8 @@ namespace DiskObserver.Model.Implementation {
     public class DirectoryModel : BaseModel, IDirectory {
 
         private string _name = "";
-        public string Name {
+        public string Name
+        {
             get => _name;
             set
             {
@@ -21,7 +22,8 @@ namespace DiskObserver.Model.Implementation {
         }
 
         private bool _isHidden;
-        public bool IsHidden {
+        public bool IsHidden
+        {
             get => _isHidden;
             private set
             {
@@ -30,7 +32,8 @@ namespace DiskObserver.Model.Implementation {
             }
         }
         private long _size;
-        public long Size {
+        public long Size
+        {
             get => _size;
             private set
             {
@@ -40,9 +43,9 @@ namespace DiskObserver.Model.Implementation {
         }
 
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
-        private DirectoryInfo _directoryInfo;
+        private string _path;
         public DirectoryModel(DirectoryInfo aDirectoryInfo) {
-            _directoryInfo = aDirectoryInfo;
+            _path = aDirectoryInfo.FullName;
 
             Name = aDirectoryInfo.Name;
             IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
@@ -51,7 +54,10 @@ namespace DiskObserver.Model.Implementation {
         }
 
         public void Dispose() {
+            foreach(var item in PhysicalObjects)
+                item.Dispose();
 
+            PhysicalObjects.Clear();
         }
 
         public void LoadInfo(DirectoryInfo aDirectoryInfo) {
@@ -61,7 +67,11 @@ namespace DiskObserver.Model.Implementation {
             try {
                 directoryInfos = aDirectoryInfo.GetDirectories();
             }
-            catch (System.UnauthorizedAccessException ex) {
+            catch (UnauthorizedAccessException ex) {
+                _ = ex;
+                Debug.WriteLine(ex.Message);
+            }
+            catch (DirectoryNotFoundException ex) {
                 _ = ex;
                 Debug.WriteLine(ex.Message);
             }
@@ -84,6 +94,10 @@ namespace DiskObserver.Model.Implementation {
                 fileInfos = aDirectoryInfo.GetFiles();
             }
             catch (UnauthorizedAccessException ex) {
+                _ = ex;
+                Debug.WriteLine(ex.Message);
+            }
+            catch (DirectoryNotFoundException ex) {
                 _ = ex;
                 Debug.WriteLine(ex.Message);
             }

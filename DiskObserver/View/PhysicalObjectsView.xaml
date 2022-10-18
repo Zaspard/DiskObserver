@@ -8,19 +8,24 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <ItemsControl ItemsSource="{Binding PhysicalObjects}">
-        <ItemsControl.Resources>
+    <UserControl.Resources>
+        <local:SizeConverter x:Key="SizeConverter"/>
+    </UserControl.Resources>
+
+    <ListBox ItemsSource="{Binding PhysicalObjects}" HorizontalContentAlignment="Stretch" Grid.IsSharedSizeScope="True">
+        <ListBox.Resources>
 
             <DataTemplate DataType="{x:Type model:DirectoryModel}">
                 <Grid Margin="5,0,2,0">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Size}"/>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}" Margin="15,0,25,0"/>
 
                 </Grid>
             </DataTemplate>
@@ -29,18 +34,18 @@
                 <Grid Margin="5,0,2,0">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="{Binding Name}"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Size}"/>
-                    <TextBlock Grid.Column="2" Text="{Binding Format}"/>
+                    <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}"  Margin="15,0,25,0"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Format}"  Margin="15,0,0,0"/>
 
                 </Grid>
             </DataTemplate>
-            
-        </ItemsControl.Resources>
-    </ItemsControl>
+
+        </ListBox.Resources>
+    </ListBox>
 </UserControl>

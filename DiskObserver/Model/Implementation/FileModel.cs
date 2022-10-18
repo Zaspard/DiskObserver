@@ -43,14 +43,17 @@ namespace DiskObserver.Model.Implementation {
         }
 
 
-        FileInfo _fileInfo;
+        string _path;
         public FileModel(FileInfo aFileInfo) {
+            _path = aFileInfo.FullName;
+
             Name = aFileInfo.Name;
             IsHidden = aFileInfo.Attributes.HasFlag(FileAttributes.Hidden);
-            Format = "";
-            Size = aFileInfo.Length;
 
-            _fileInfo = aFileInfo;
+            if (aFileInfo.Extension?.Length > 0)
+                Format = aFileInfo.Extension.Substring(1, aFileInfo.Extension.Length - 1);
+
+            Size = aFileInfo.Length;
         }
 
         public void Dispose() {

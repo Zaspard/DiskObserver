@@ -94,7 +94,7 @@ namespace DiskObserver.Model.Implementation {
             }
 
             foreach (FileInfo fileInfo in _driveInfo.RootDirectory.GetFiles()) {
-                    PhysicalObjects.Add(new FileModel(fileInfo));
+                PhysicalObjects.Add(new FileModel(fileInfo));
             }
         }
 
