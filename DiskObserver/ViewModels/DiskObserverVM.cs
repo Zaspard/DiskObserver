@@ -25,6 +25,17 @@ namespace DiskObserver.ViewModels {
             }
         }
 
+        private bool _isEnable = true;
+        public bool IsEnable
+        {
+            get => _isEnable;
+            set
+            {
+                _isEnable = value;
+                OnPropertyChanged(nameof(IsEnable));
+            }
+        }
+
         public DiskObserverVM() {
 
             DriveInfo[] drives = DriveInfo.GetDrives();
