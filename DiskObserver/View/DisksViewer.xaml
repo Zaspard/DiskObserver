@@ -11,7 +11,7 @@
         <view:SizeConverter x:Key="SizeConverter"/>
     </UserControl.Resources>
 
-    <ListBox ItemsSource="{Binding PhysicalDisks}" SelectedItem="{Binding SelectedPhysicalDisk}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+    <ListBox ItemsSource="{Binding PhysicalDisks}" SelectedItem="{Binding DisplayedPhysicalObject}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
         <ListBox.ItemTemplate>
             <DataTemplate>
 

@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DiskObserver.Model.Interface;
+using DiskObserver.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DiskObserver.View {
     /// <summary>
@@ -20,6 +11,17 @@ namespace DiskObserver.View {
     public partial class PhysicalObjectsView : UserControl {
         public PhysicalObjectsView() {
             InitializeComponent();
+        }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2) {
+
+                if (this.DataContext is DiskObserverVM diskObserverVM
+                                  && sender is FrameworkElement c && c.DataContext is IPhysicalObject physicalObject) {
+                    diskObserverVM.DisplayPhysicalObject(physicalObject);
+                }
+
+            }
         }
     }
 }

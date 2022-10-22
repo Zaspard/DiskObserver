@@ -1,5 +1,6 @@
 ﻿using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace DiskObserver.Model.Implementation {
@@ -42,10 +43,22 @@ namespace DiskObserver.Model.Implementation {
             }
         }
 
+        private string _path;
+        public string Path
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                OnPropertyChanged(nameof(Path));
+            }
+        }
 
-        string _path;
-        public FileModel(FileInfo aFileInfo) {
-            _path = aFileInfo.FullName;
+        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = null;
+        public IPhysicalObject ParentPhysicalObject{ get; private set; }
+        public FileModel(FileInfo aFileInfo, IPhysicalObject _parentObject) {
+            ParentPhysicalObject = _parentObject;
+            Path = aFileInfo.FullName;
 
             Name = aFileInfo.Name;
             IsHidden = aFileInfo.Attributes.HasFlag(FileAttributes.Hidden);
@@ -57,7 +70,7 @@ namespace DiskObserver.Model.Implementation {
         }
 
         public void Dispose() {
-
+            ParentPhysicalObject = null;
         }
 
         public void Delete() {

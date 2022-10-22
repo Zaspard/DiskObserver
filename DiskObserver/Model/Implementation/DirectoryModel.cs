@@ -42,10 +42,24 @@ namespace DiskObserver.Model.Implementation {
             }
         }
 
-        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
         private string _path;
-        public DirectoryModel(DirectoryInfo aDirectoryInfo) {
-            _path = aDirectoryInfo.FullName;
+        public string Path
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                OnPropertyChanged(nameof(Path));
+            }
+        }
+
+        public IPhysicalObject ParentPhysicalObject { get; private set; }
+
+        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
+        
+        public DirectoryModel(DirectoryInfo aDirectoryInfo, IPhysicalObject _parentObject) {
+            ParentPhysicalObject = _parentObject;
+            Path = aDirectoryInfo.FullName;
 
             Name = aDirectoryInfo.Name;
             IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
@@ -54,7 +68,9 @@ namespace DiskObserver.Model.Implementation {
         }
 
         public void Dispose() {
-            foreach(var item in PhysicalObjects)
+            ParentPhysicalObject = null;
+
+            foreach (var item in PhysicalObjects)
                 item.Dispose();
 
             PhysicalObjects.Clear();
@@ -83,7 +99,7 @@ namespace DiskObserver.Model.Implementation {
             if (directoryInfos != null) {
 
                 foreach (DirectoryInfo directoryInfo in directoryInfos) {
-                    DirectoryModel directoryModel = new DirectoryModel(directoryInfo);
+                    DirectoryModel directoryModel = new DirectoryModel(directoryInfo, this);
                     PhysicalObjects.Add(directoryModel);
                     size += directoryModel.Size;
                 }
@@ -107,7 +123,7 @@ namespace DiskObserver.Model.Implementation {
 
             if (fileInfos != null) {
                 foreach (FileInfo fileInfo in fileInfos) {
-                    FileModel fileModel = new FileModel(fileInfo);
+                    FileModel fileModel = new FileModel(fileInfo, this);
                     PhysicalObjects.Add(fileModel);
                     size += fileModel.Size;
                 }

@@ -62,11 +62,24 @@ namespace DiskObserver.Model.Implementation {
             }
         }
 
+        private string _path;
+        public string Path
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                OnPropertyChanged(nameof(Path));
+            }
+        }
+
+        public IPhysicalObject ParentPhysicalObject { get; private set; } = null;
+
 
         private DriveInfo _driveInfo;
         public PhysicalDisk(DriveInfo driveInfo) {
-
             _driveInfo = driveInfo;
+            Path = driveInfo.Name;
             Name = driveInfo.Name;
             if (driveInfo.IsReady) {
                 Format = driveInfo.DriveFormat;
@@ -89,12 +102,12 @@ namespace DiskObserver.Model.Implementation {
         public async void LoadInfo() {
             foreach (DirectoryInfo directoryInfo in _driveInfo.RootDirectory.GetDirectories()) {
                 await Task.Run(() => {
-                    PhysicalObjects.Add(new DirectoryModel(directoryInfo));
+                    PhysicalObjects.Add(new DirectoryModel(directoryInfo, this));
                 });
             }
 
             foreach (FileInfo fileInfo in _driveInfo.RootDirectory.GetFiles()) {
-                PhysicalObjects.Add(new FileModel(fileInfo));
+                PhysicalObjects.Add(new FileModel(fileInfo, this));
             }
         }
 

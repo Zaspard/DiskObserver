@@ -12,40 +12,80 @@
         <local:SizeConverter x:Key="SizeConverter"/>
     </UserControl.Resources>
 
-    <ListBox ItemsSource="{Binding PhysicalObjects}" HorizontalContentAlignment="Stretch" Grid.IsSharedSizeScope="True">
-        <ListBox.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <DataTemplate DataType="{x:Type model:DirectoryModel}">
-                <Grid Margin="5,0,2,0">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-                    </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding DisplayedPhysicalObject.PhysicalObjects.Path}"/>
+            <Button Grid.Column="1" Command="{Binding DisplayParentPhysicalObjectCommand}"/> 
+        </Grid>
 
-                    <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}" Margin="15,0,25,0"/>
+        <ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}" HorizontalContentAlignment="Stretch" Grid.IsSharedSizeScope="True" Grid.Row="1">
 
-                </Grid>
-            </DataTemplate>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="Border" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="Border" Property="Background" Value="#ddd"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="#888"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
 
-            <DataTemplate DataType="{x:Type model:FileModel}">
-                <Grid Margin="5,0,2,0">
+            <ListBox.Resources>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-                    </Grid.ColumnDefinitions>
+                <DataTemplate DataType="{x:Type model:DirectoryModel}">
+                    <Grid Margin="5,0,2,0">
 
-                    <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
-                    <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}"  Margin="15,0,25,0"/>
-                    <TextBlock Grid.Column="2" Text="{Binding Format}"  Margin="15,0,0,0"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+                        </Grid.ColumnDefinitions>
 
-                </Grid>
-            </DataTemplate>
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}" Margin="15,0,25,0"/>
 
-        </ListBox.Resources>
-    </ListBox>
+                    </Grid>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type model:FileModel}">
+                    <Grid Margin="5,0,2,0">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}"  Margin="15,0,25,0"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Format}"  Margin="15,0,0,0"/>
+
+                    </Grid>
+                </DataTemplate>
+
+            </ListBox.Resources>
+        </ListBox>
+    </Grid>
 </UserControl>
