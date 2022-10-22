@@ -6,5 +6,6 @@ namespace DiskObserver.Model.Interface {
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; }
         public string Path { get; }
         public IPhysicalObject ParentPhysicalObject { get; }
+        public void LazyInit();
     }
 }

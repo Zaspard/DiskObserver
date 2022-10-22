@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 #nullable enable
 
@@ -64,7 +65,7 @@ namespace DiskObserver.Model.Implementation {
             Name = aDirectoryInfo.Name;
             IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
 
-            LoadInfo(aDirectoryInfo);
+            //LoadInfo(aDirectoryInfo);
         }
 
         public void Dispose() {
@@ -76,9 +77,15 @@ namespace DiskObserver.Model.Implementation {
             PhysicalObjects.Clear();
         }
 
-        public void LoadInfo(DirectoryInfo aDirectoryInfo) {
 
-            long size = 0;
+        bool _inited = false;
+        public void LazyInit() {
+
+            if (_inited)
+                return;
+
+            var aDirectoryInfo = new DirectoryInfo(_path);
+
             DirectoryInfo[]? directoryInfos = null;
             try {
                 directoryInfos = aDirectoryInfo.GetDirectories();
@@ -101,7 +108,6 @@ namespace DiskObserver.Model.Implementation {
                 foreach (DirectoryInfo directoryInfo in directoryInfos) {
                     DirectoryModel directoryModel = new DirectoryModel(directoryInfo, this);
                     PhysicalObjects.Add(directoryModel);
-                    size += directoryModel.Size;
                 }
             }
 
@@ -125,11 +131,10 @@ namespace DiskObserver.Model.Implementation {
                 foreach (FileInfo fileInfo in fileInfos) {
                     FileModel fileModel = new FileModel(fileInfo, this);
                     PhysicalObjects.Add(fileModel);
-                    size += fileModel.Size;
                 }
             }
 
-            Size = size;
+            _inited = true;
         }
 
         public void Delete() {

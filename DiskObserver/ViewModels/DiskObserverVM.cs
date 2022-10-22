@@ -59,6 +59,7 @@ namespace DiskObserver.ViewModels {
             if (physicalObject is IFile)
                 return;
 
+            physicalObject.LazyInit();
             DisplayedPhysicalObject = physicalObject;
         }
     }

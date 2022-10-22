@@ -76,5 +76,9 @@ namespace DiskObserver.Model.Implementation {
         public void Delete() {
 
         }
+
+        public void LazyInit() {
+
+        }
     }
 }

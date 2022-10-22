@@ -1,8 +1,8 @@
 ﻿using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -85,7 +85,6 @@ namespace DiskObserver.Model.Implementation {
                 Format = driveInfo.DriveFormat;
                 TotalMemory = driveInfo.TotalSize;
                 FreeMemory = driveInfo.AvailableFreeSpace;
-                LoadInfo();
             }
         }
 
@@ -99,20 +98,29 @@ namespace DiskObserver.Model.Implementation {
             PhysicalObjects.Clear();
         }
 
-        public async void LoadInfo() {
+        public void RefreshProperty() {
+            FreeMemory = _driveInfo.AvailableFreeSpace;
+        }
+
+        bool _inited = false;
+        public void LazyInit() {
+
+            if (_inited || !_driveInfo.IsReady)
+                return;
+
             foreach (DirectoryInfo directoryInfo in _driveInfo.RootDirectory.GetDirectories()) {
-                await Task.Run(() => {
+                if (!PhysicalObjects.Any(x => x.Path == directoryInfo.FullName)) {
                     PhysicalObjects.Add(new DirectoryModel(directoryInfo, this));
-                });
+                }
             }
 
             foreach (FileInfo fileInfo in _driveInfo.RootDirectory.GetFiles()) {
-                PhysicalObjects.Add(new FileModel(fileInfo, this));
+                if (!PhysicalObjects.Any(x => x.Path == fileInfo.FullName)) {
+                    PhysicalObjects.Add(new FileModel(fileInfo, this));
+                }
             }
-        }
 
-        public void RefreshProperty() {
-            FreeMemory = _driveInfo.AvailableFreeSpace;
+            _inited = true;
         }
     }
 }
