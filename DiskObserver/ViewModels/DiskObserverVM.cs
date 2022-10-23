@@ -72,7 +72,7 @@ namespace DiskObserver.ViewModels {
 
             List<IFile> heavyFiles = new();
             await Task.Run(() => {
-                physicalObject.GetHeavyFiles(heavyFiles, 20);
+                physicalObject.GetHeavyFiles(heavyFiles, 50);
             });
 
             IPhysicalObject head = new DirectoryModel();
