@@ -10,6 +10,11 @@
 
     <UserControl.Resources>
         <local:SizeConverter x:Key="SizeConverter"/>
+
+        <ContextMenu x:Key="DirectoryContextMenu">
+            <MenuItem Header="Find all heavy files" Click="FindAllHevyFiles_Click"/>
+        </ContextMenu>
+        
     </UserControl.Resources>
 
     <Grid>
@@ -55,7 +60,7 @@
             <ListBox.Resources>
 
                 <DataTemplate DataType="{x:Type model:DirectoryModel}">
-                    <Grid Margin="5,0,2,0">
+                    <Grid Margin="5,0,2,0" ContextMenu="{StaticResource DirectoryContextMenu}">
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>

@@ -9,6 +9,10 @@
 
     <UserControl.Resources>
         <view:SizeConverter x:Key="SizeConverter"/>
+
+        <ContextMenu x:Key="DiskContextMenu">
+            <MenuItem Header="Find all heavy files" Click="FindAllHevyFiles_Click"/>
+        </ContextMenu>
     </UserControl.Resources>
 
     <ListBox ItemsSource="{Binding PhysicalDisks}"
@@ -17,7 +21,7 @@
         <ListBox.ItemTemplate>
             <DataTemplate>
 
-                <Grid Margin="5,0,2,0">
+                <Grid Margin="5,0,2,0" ContextMenu="{StaticResource DiskContextMenu}">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>

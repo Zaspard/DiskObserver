@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace DiskObserver.Model.Interface {
@@ -7,5 +8,6 @@ namespace DiskObserver.Model.Interface {
         public string Path { get; }
         public IPhysicalObject ParentPhysicalObject { get; }
         public void LazyInit();
+        public void GetHeavyFiles(List<IFile> heavyFiles, int maxCount);
     }
 }

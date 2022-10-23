@@ -1,7 +1,9 @@
 ﻿using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace DiskObserver.Model.Implementation {
     public class FileModel : BaseModel, IFile {
@@ -79,6 +81,38 @@ namespace DiskObserver.Model.Implementation {
 
         public void LazyInit() {
 
+        }
+
+        public void GetHeavyFiles(List<IFile> aHeavyFiles, int aMaxCount) {
+
+            if (aHeavyFiles.Count <= 0) {
+                aHeavyFiles.Add(this);
+                return;
+            }
+
+            if (aHeavyFiles.Count - 1 > aMaxCount) {
+
+                IFile lastFileModel = aHeavyFiles[aHeavyFiles.Count - 1];
+                if (Size < lastFileModel.Size)
+                    return;
+
+                aHeavyFiles.Remove(lastFileModel);
+            }
+
+            int index = -1;
+            for (int i = 0; i < aHeavyFiles.Count; i++) {
+
+                IFile fileModel = aHeavyFiles[i];
+                if (fileModel.Size < Size) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                return;
+
+            aHeavyFiles.Insert(index, this);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -66,6 +67,10 @@ namespace DiskObserver.Model.Implementation {
             IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
 
             //LoadInfo(aDirectoryInfo);
+        }
+
+        public DirectoryModel() {
+
         }
 
         public void Dispose() {
@@ -139,6 +144,15 @@ namespace DiskObserver.Model.Implementation {
 
         public void Delete() {
 
+        }
+
+        public void GetHeavyFiles(List<IFile> aHeavyFiles, int aMaxCount) {
+            if (!_inited)
+                LazyInit();
+
+            foreach (IPhysicalObject physicalObject in PhysicalObjects) {
+                physicalObject.GetHeavyFiles(aHeavyFiles, aMaxCount);
+            }
         }
     }
 }

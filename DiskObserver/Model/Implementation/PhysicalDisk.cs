@@ -1,9 +1,9 @@
 ﻿using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 #nullable enable
 
@@ -121,6 +121,18 @@ namespace DiskObserver.Model.Implementation {
             }
 
             _inited = true;
+        }
+
+        public void GetHeavyFiles(List<IFile> aHeavyFiles, int aMaxCount) {
+            if (!_driveInfo.IsReady)
+                return;
+
+            if (!_inited)
+                LazyInit();
+
+            foreach (IPhysicalObject physicalObject in PhysicalObjects) {
+                physicalObject.GetHeavyFiles(aHeavyFiles, aMaxCount);
+            }
         }
     }
 }
