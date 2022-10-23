@@ -24,17 +24,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
-            </Grid.ColumnDefinitions>
+        <Border BorderBrush="LightGray" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="{Binding DisplayedPhysicalObject.PhysicalObjects.Path}"/>
-            <Button Grid.Column="1" Command="{Binding DisplayParentPhysicalObjectCommand}"/> 
-        </Grid>
+                <TextBlock Grid.Column="0" Text="{Binding DisplayedPhysicalObject.Path}"/>
+                <Button Grid.Column="1" Command="{Binding DisplayParentPhysicalObjectCommand}"/>
+            </Grid>
+        </Border>
 
-        <ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}" HorizontalContentAlignment="Stretch" Grid.IsSharedSizeScope="True" Grid.Row="1">
+        <ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}" 
+                 BorderBrush="LightGray" 
+                 HorizontalContentAlignment="Stretch" Grid.IsSharedSizeScope="True" 
+                 Grid.Row="1">
 
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
@@ -70,7 +75,6 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Size, Converter={StaticResource SizeConverter}}" Margin="15,0,25,0"/>
 
                     </Grid>
                 </DataTemplate>

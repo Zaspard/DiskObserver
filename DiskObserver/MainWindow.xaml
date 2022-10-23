@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:DiskObserver.View"
         xmlns:converters="clr-namespace:DiskObserver.View.Converters"
-        Title="DiskObserver" Height="450" Width="900">
+        Title="DiskObserver" MaxHeight="800" MaxWidth="1200">
 
     <Window.Resources>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
@@ -14,7 +14,7 @@
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*" MaxWidth="300"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -24,7 +24,12 @@
         </Grid>
         <Grid Visibility="{Binding IsEnable, Converter={StaticResource BoolToVisibilityRevertConverter}}"
               Opacity="{Binding IsEnable, Converter={StaticResource BoolToOpacityConverter}}"
-              Background="Gray">
+              Background="LightGray">
+
+            <ProgressBar Minimum="0" Maximum="100"
+                         IsIndeterminate="True" 
+                         Height="20" VerticalAlignment="Bottom" 
+                         BorderBrush="LightGray" BorderThickness="1"/>
         </Grid>
     </Grid>
 </Window>

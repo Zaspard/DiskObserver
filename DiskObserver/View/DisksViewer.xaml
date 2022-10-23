@@ -17,8 +17,32 @@
     </UserControl.Resources>
 
     <ListBox ItemsSource="{Binding PhysicalDisks}"
+             BorderBrush="LightGray"
              HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
              SelectionChanged="ListBox_SelectionChanged">
+        
+        <ListBox.ItemContainerStyle>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border x:Name="Border">
+                                <ContentPresenter/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="#ddd"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="#888"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.ItemContainerStyle>
+        
         <ListBox.ItemTemplate>
             <DataTemplate>
 
