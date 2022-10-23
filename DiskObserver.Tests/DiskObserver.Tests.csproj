@@ -23,4 +23,8 @@
 	  <Folder Include="TestFiles\TestFolder1\" />
 	</ItemGroup>
 
+	<Target Name="Copy_TestFiles" AfterTargets="AfterBuild">
+		<Exec Command="xcopy /E /Y /I &quot;$(ProjectDir)TestFiles&quot; &quot;$(TargetDir)\TestFiles&quot;" />
+	</Target>	
+
 </Project>
