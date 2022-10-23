@@ -17,4 +17,10 @@
 		<ProjectReference Include="..\DiskObserver\DiskObserver.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="TestFiles\TestFolder3\" />
+	  <Folder Include="TestFiles\TestFolder2\" />
+	  <Folder Include="TestFiles\TestFolder1\" />
+	</ItemGroup>
+
 </Project>
