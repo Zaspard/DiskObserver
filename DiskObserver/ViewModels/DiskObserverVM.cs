@@ -4,6 +4,7 @@ using DiskObserver.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -82,6 +83,12 @@ namespace DiskObserver.ViewModels {
 
             DisplayedPhysicalObject = head;
             IsEnable = true;
+        }
+
+        public void OpenInExplorer(IPhysicalObject physicalObject) {
+            string argument = "/select, \"" + physicalObject.Path + "\"";
+
+            Process.Start("explorer.exe", argument);
         }
     }
 }

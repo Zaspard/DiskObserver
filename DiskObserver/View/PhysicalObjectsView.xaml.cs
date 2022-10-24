@@ -31,5 +31,13 @@ namespace DiskObserver.View {
                 diskObserverVM.FindAllHeavyFiles(physicalObject);
             }
         }
+
+        private void OpenInExplorer_Click(object sender, RoutedEventArgs e) {
+            if (this.DataContext is DiskObserverVM diskObserverVM
+                && sender is Control control
+                && control.DataContext is IPhysicalObject physicalObject) {
+                diskObserverVM.OpenInExplorer(physicalObject);
+            }
+        }
     }
 }

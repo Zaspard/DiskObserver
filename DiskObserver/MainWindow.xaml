@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:DiskObserver.View"
         xmlns:converters="clr-namespace:DiskObserver.View.Converters"
-        Title="DiskObserver" MaxHeight="800" MaxWidth="1200">
+        Title="DiskObserver" MaxHeight="400" MaxWidth="800">
 
     <Window.Resources>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
