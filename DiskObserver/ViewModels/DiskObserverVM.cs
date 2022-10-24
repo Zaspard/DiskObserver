@@ -4,12 +4,13 @@ using DiskObserver.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
-        public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject.ParentPhysicalObject));
+        public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
 
         //Contains only IPhysicalDisk
         public ObservableCollection<IPhysicalObject> PhysicalDisks { get; set; } = new();
@@ -82,6 +83,12 @@ namespace DiskObserver.ViewModels {
 
             DisplayedPhysicalObject = head;
             IsEnable = true;
+        }
+
+        public void OpenInExplorer(IPhysicalObject physicalObject) {
+            string argument = "/select, \"" + physicalObject.Path + "\"";
+
+            Process.Start("explorer.exe", argument);
         }
     }
 }

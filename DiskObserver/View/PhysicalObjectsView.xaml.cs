@@ -5,9 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace DiskObserver.View {
-    /// <summary>
-    /// Interaction logic for PhysicalObjectsView.xaml
-    /// </summary>
     public partial class PhysicalObjectsView : UserControl {
         public PhysicalObjectsView() {
             InitializeComponent();
@@ -29,6 +26,14 @@ namespace DiskObserver.View {
                 && sender is Control control
                 && control.DataContext is IPhysicalObject physicalObject) {
                 diskObserverVM.FindAllHeavyFiles(physicalObject);
+            }
+        }
+
+        private void OpenInExplorer_Click(object sender, RoutedEventArgs e) {
+            if (this.DataContext is DiskObserverVM diskObserverVM
+                && sender is Control control
+                && control.DataContext is IPhysicalObject physicalObject) {
+                diskObserverVM.OpenInExplorer(physicalObject);
             }
         }
     }
