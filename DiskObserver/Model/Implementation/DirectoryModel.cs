@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
-#nullable enable
+#nullable disable
 
 namespace DiskObserver.Model.Implementation {
     public class DirectoryModel : BaseModel, IDirectory {
@@ -65,8 +64,6 @@ namespace DiskObserver.Model.Implementation {
 
             Name = aDirectoryInfo.Name;
             IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
-
-            //LoadInfo(aDirectoryInfo);
         }
 
         public DirectoryModel() {
@@ -91,7 +88,7 @@ namespace DiskObserver.Model.Implementation {
 
             var aDirectoryInfo = new DirectoryInfo(_path);
 
-            DirectoryInfo[]? directoryInfos = null;
+            DirectoryInfo[] directoryInfos = null;
             try {
                 directoryInfos = aDirectoryInfo.GetDirectories();
             }
@@ -104,7 +101,9 @@ namespace DiskObserver.Model.Implementation {
                 Debug.WriteLine(ex.Message);
             }
             catch (Exception ex) {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
 
 
@@ -116,7 +115,7 @@ namespace DiskObserver.Model.Implementation {
                 }
             }
 
-            FileInfo[]? fileInfos = null;
+            FileInfo[] fileInfos = null;
             try {
                 fileInfos = aDirectoryInfo.GetFiles();
             }
@@ -129,7 +128,9 @@ namespace DiskObserver.Model.Implementation {
                 Debug.WriteLine(ex.Message);
             }
             catch (Exception ex) {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
 
             if (fileInfos != null) {

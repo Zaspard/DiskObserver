@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+#nullable disable
+
 namespace DiskObserver.Utils {
     public class BaseModel : INotifyPropertyChanged {
 

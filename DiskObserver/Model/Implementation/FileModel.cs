@@ -3,7 +3,8 @@ using DiskObserver.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
+
+#nullable disable
 
 namespace DiskObserver.Model.Implementation {
     public class FileModel : BaseModel, IFile {
