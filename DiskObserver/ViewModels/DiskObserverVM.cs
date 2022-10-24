@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
-        public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject.ParentPhysicalObject));
+        public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
 
         //Contains only IPhysicalDisk
         public ObservableCollection<IPhysicalObject> PhysicalDisks { get; set; } = new();

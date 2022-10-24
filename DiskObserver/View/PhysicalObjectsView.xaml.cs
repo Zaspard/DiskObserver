@@ -5,9 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace DiskObserver.View {
-    /// <summary>
-    /// Interaction logic for PhysicalObjectsView.xaml
-    /// </summary>
     public partial class PhysicalObjectsView : UserControl {
         public PhysicalObjectsView() {
             InitializeComponent();
