@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
+#nullable disable
+
 namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
         public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 
+#nullable disable
+
 namespace DiskObserver.Utils {
     public class RelayCommand : ICommand, IDisposable {
         private Action<object> execute;

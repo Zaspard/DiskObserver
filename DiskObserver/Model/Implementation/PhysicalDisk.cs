@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-#nullable enable
+#nullable disable
 
 namespace DiskObserver.Model.Implementation {
     public sealed class PhysicalDisk : BaseModel, IPhysicalDisk {
