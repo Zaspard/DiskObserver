@@ -16,13 +16,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DiskObserver\DiskObserver.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="TestFiles\TestFolder3\" />
 	  <Folder Include="TestFiles\TestFolder2\" />
 	  <Folder Include="TestFiles\TestFolder1\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DiskObserver.Avalonia\DiskObserver.Avalonia.csproj" />
 	</ItemGroup>
 
 	<Target Name="Copy_TestFiles" AfterTargets="AfterBuild">

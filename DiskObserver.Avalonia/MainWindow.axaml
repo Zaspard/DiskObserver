@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:DiskObserver.Avalonia.View.Converters"
+        xmlns:view="clr-namespace:DiskObserver.Avalonia.View"
+		x:Class="DiskObserver.Avalonia.MainWindow"
+        Title="DiskObserver" MaxHeight="400" MaxWidth="800">
+
+    <Window.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+		
+        <Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MaxWidth="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+			<view:CommonPanelView Grid.Row="0" Grid.ColumnSpan="2"/>
+			<view:QuickPanelView Grid.Row="1" Grid.ColumnSpan="2"/>
+            <view:QuickTreeViewer Grid.Row="2" Grid.Column="0"/>
+            <view:FilesViewer Grid.Row="2" Grid.Column="2"/>
+        </Grid>
+		
+		
+        <Grid IsVisible="{Binding !IsEnable}"
+              Opacity="{Binding IsEnable, Converter={StaticResource BoolToOpacityConverter}}"
+              Background="LightGray">
+
+            <ProgressBar Minimum="0" Maximum="100"
+                         IsIndeterminate="True" 
+                         Height="20" VerticalAlignment="Bottom" 
+                         BorderBrush="LightGray" BorderThickness="1"/>
+        </Grid>
+    </Grid>
+</Window>

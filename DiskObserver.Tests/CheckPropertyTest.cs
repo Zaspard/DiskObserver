@@ -1,9 +1,8 @@
-﻿using DiskObserver.Model.Implementation;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.IO;
 using System.Reflection;
 
-namespace DiskObserver.Tests {
+namespace DiskObserver.Avalonia.Tests {
     public class CheckPropertyTest {
 
         [Test]
