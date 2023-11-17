@@ -5,7 +5,9 @@
         xmlns:converters="clr-namespace:DiskObserver.Avalonia.View.Converters"
         xmlns:view="clr-namespace:DiskObserver.Avalonia.View"
 		x:Class="DiskObserver.Avalonia.MainWindow"
-        Title="DiskObserver" MaxHeight="400" MaxWidth="800">
+		MinWidth="200"
+		MinHeight="600"
+        Title="DiskObserver">
 
     <Window.Resources>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
@@ -20,15 +22,27 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MaxWidth="300"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+			<view:CommonPanelView Grid.Row="0"/>
+			<view:QuickPanelView Grid.Row="1"/>
+			
+			<Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="Gray">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="8"/>
+						<ColumnDefinition Width="4*"/>
+					</Grid.ColumnDefinitions>
+					
+					<view:QuickTreeViewer  Grid.Column="0"/>
 
-			<view:CommonPanelView Grid.Row="0" Grid.ColumnSpan="2"/>
-			<view:QuickPanelView Grid.Row="1" Grid.ColumnSpan="2"/>
-            <view:QuickTreeViewer Grid.Row="2" Grid.Column="0"/>
-            <view:FilesViewer Grid.Row="2" Grid.Column="2"/>
+					<GridSplitter  Grid.Column="1"
+								  ResizeBehavior="PreviousAndNext"
+								  BorderThickness="1,0" BorderBrush="Gray">
+					</GridSplitter>
+
+					<view:FilesViewer Grid.Column="2"/>
+				</Grid>
+			</Border>
         </Grid>
 		
 		

@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
-#nullable disable
+#nullable enable
 
 namespace DiskObserver.Avalonia.Model.Implementation {
     public class FileModel : BaseModel, IFile {
+        public bool IsVisibleInTree => false;
+
         private string _name = "";
         public string Name {
             get => _name;
@@ -19,12 +21,12 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         }
 
         private bool _isHidden;
-        public bool IsHidden {
+        public bool IsVisible {
             get => _isHidden;
             private set
             {
                 _isHidden = value;
-                OnPropertyChanged(nameof(IsHidden));
+                OnPropertyChanged(nameof(IsVisible));
             }
         }
         private long _size;
@@ -57,14 +59,14 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = null;
+        public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; set; } = null;
         public IPhysicalObject ParentPhysicalObject{ get; private set; }
         public FileModel(FileInfo aFileInfo, IPhysicalObject _parentObject) {
             ParentPhysicalObject = _parentObject;
             Path = aFileInfo.FullName;
 
             Name = aFileInfo.Name;
-            IsHidden = aFileInfo.Attributes.HasFlag(FileAttributes.Hidden);
+            IsVisible = !aFileInfo.Attributes.HasFlag(FileAttributes.Hidden);
 
             if (aFileInfo.Extension?.Length > 0)
                 Format = aFileInfo.Extension.Substring(1, aFileInfo.Extension.Length - 1);

@@ -5,12 +5,24 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-#nullable disable
+#nullable enable
 
 namespace DiskObserver.Avalonia.Model.Implementation {
     public sealed class PhysicalDisk : BaseModel, IPhysicalDisk {
+        public bool IsVisibleInTree => true;
+        public IPhysicalObject? ParentPhysicalObject { get; private set; } = null;
+        ObservableCollection<IPhysicalObject>? _physicalObjects = null;
+        public ObservableCollection<IPhysicalObject>? PhysicalObjects { 
+            get
+            {
+                if(_physicalObjects == null) {
+                    _physicalObjects = new();
+                    LazyInit();
+                }
 
-        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
+                return _physicalObjects;
+            }
+        }
 
         string _name = "";
         public string Name {
@@ -62,7 +74,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        private string _path;
+        private string _path = "";
         public string Path
         {
             get => _path;
@@ -73,7 +85,15 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        public IPhysicalObject ParentPhysicalObject { get; private set; } = null;
+        bool _isExpanded = false;
+        public bool IsExpanded {
+            get => _isExpanded;
+            set
+            {
+                _isExpanded = value;
+                OnPropertyChanged(nameof(IsExpanded));
+            }
+        }
 
 
         private DriveInfo _driveInfo;
@@ -86,16 +106,20 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 TotalMemory = driveInfo.TotalSize;
                 FreeMemory = driveInfo.AvailableFreeSpace;
             }
+
+            LazyInit();
         }
 
         public void Dispose() {
             _driveInfo = null;
 
-            foreach(IPhysicalObject physicalObject in PhysicalObjects) {
-                physicalObject.Dispose();
-            }
+            if (_physicalObjects != null && _physicalObjects.Count > 0) {
 
-            PhysicalObjects.Clear();
+                foreach (IPhysicalObject physicalObject in _physicalObjects) {
+                    physicalObject.Dispose();
+                }
+                _physicalObjects.Clear();
+            }
         }
 
         public void RefreshProperty() {

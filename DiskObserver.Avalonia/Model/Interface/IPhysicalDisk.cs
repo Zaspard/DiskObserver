@@ -7,6 +7,7 @@ namespace DiskObserver.Avalonia.Model.Interface {
         public long TotalMemory { get; }
         public long FreeMemory { get; }
         public bool IsNotReady { get; }
+        public bool IsExpanded { get; }
         public void RefreshProperty();
     }
 }

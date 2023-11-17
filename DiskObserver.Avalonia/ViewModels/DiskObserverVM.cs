@@ -1,21 +1,23 @@
 ﻿using DiskObserver.Avalonia.Model.Implementation;
 using DiskObserver.Avalonia.Model.Interface;
 using DiskObserver.Avalonia.Utils;
+using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
+using System.Reactive;
 
 #nullable disable
 
 namespace DiskObserver.Avalonia.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
-        //public RelayCommand DisplayParentPhysicalObjectCommand => new RelayCommand(obj => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
+        public ReactiveCommand<IPhysicalObject, Unit> DisplayPhysicalObjectCommand => 
+                                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));
+        public ReactiveCommand<Unit, Unit> DisplayParentCommand =>
+                                                        ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
 
-        //Contains only IPhysicalDisk
-        public ObservableCollection<IPhysicalObject> PhysicalDisks { get; set; } = new();
+        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
+        QuickAccessModel _quickAccessModel;
 
         private IPhysicalObject _displayedPhysicalObject;
         public IPhysicalObject DisplayedPhysicalObject {
@@ -49,17 +51,25 @@ namespace DiskObserver.Avalonia.ViewModels {
         }
 
         public DiskObserverVM() {
+            _quickAccessModel = new QuickAccessModel();
+            PhysicalObjects.Add(_quickAccessModel);
+
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo driveInfo in drives) {
-                PhysicalDisks.Add(new PhysicalDisk(driveInfo));
+                PhysicalObjects.Add(new PhysicalDisk(driveInfo));
             }
         }
 
         public void Dispose() {
-            foreach (IPhysicalObject physicalDisk in PhysicalDisks)
-                physicalDisk.Dispose();
+            _quickAccessModel = null;
 
-            PhysicalDisks.Clear();
+            if (PhysicalObjects != null) {
+                foreach (IPhysicalObject item in PhysicalObjects)
+                    item.Dispose();
+            }
+
+            PhysicalObjects.Clear();
+
         }
 
         public void DisplayPhysicalObject(IPhysicalObject physicalObject) {
@@ -70,27 +80,31 @@ namespace DiskObserver.Avalonia.ViewModels {
             DisplayedPhysicalObject = physicalObject;
         }
 
-        public async void FindAllHeavyFiles(IPhysicalObject physicalObject) {
-            IsEnable = false;
-
-            List<IFile> heavyFiles = new();
-            await Task.Run(() => {
-                physicalObject.GetHeavyFiles(heavyFiles, 50);
-            });
-
-            IPhysicalObject head = new DirectoryModel();
-            foreach(IFile file in heavyFiles) {
-                head.PhysicalObjects.Add(file);
+        internal void AddPhysicalObjectToQuickAccess(IPhysicalObject item) {
+            if (!_quickAccessModel.PhysicalObjects.Contains(item)) {
+                _quickAccessModel.PhysicalObjects.Add(item);
             }
-
-            DisplayedPhysicalObject = head;
-            IsEnable = true;
         }
 
-        public void OpenInExplorer(IPhysicalObject physicalObject) {
-            string argument = "/select, \"" + physicalObject.Path + "\"";
+        internal void RemovePhysicalObjectFromQuickAccess(IPhysicalObject item) {
+            if (_quickAccessModel.PhysicalObjects.Contains(item)) {
+                _quickAccessModel.PhysicalObjects.Remove(item);
+            }
+        }
 
-            Process.Start("explorer.exe", argument);
+        internal void RenameItem(IPhysicalObject physicalObject) {
+        }
+
+        internal void ShowPropertyItem(IPhysicalObject physicalObject) {
+        }
+
+        internal void Paste(IPhysicalObject physicalObject) {
+        }
+
+        internal void Cut(IPhysicalObject physicalObject) {
+        }
+
+        internal void Copy(IPhysicalObject physicalObject) {
         }
     }
 }

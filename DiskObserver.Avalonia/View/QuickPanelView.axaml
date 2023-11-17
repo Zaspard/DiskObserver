@@ -2,7 +2,108 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="DiskObserver.Avalonia.View.QuickPanelView">
-  Welcome to Avalonia!
+	<UserControl.Resources>
+		<ResourceDictionary>
+
+			<ControlTheme x:Key="MoveBackButtonTheme" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Width" Value="30"/>
+				<Setter Property="Margin" Value="2,0"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="Button">
+							<Border Background="{TemplateBinding Background}" CornerRadius="3">
+								<Viewbox Height="18" Margin="0,0,5,5">
+									<Path Fill="Black" Data="M10.05 16.94V12.94H18.97L19 10.93H10.05V6.94L5.05 11.94Z" />
+								</Viewbox>
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+
+				<Style Selector="^:pointerover">
+					<Setter Property="Background" Value="Gray"/>
+				</Style>
+			</ControlTheme>
+
+			<ControlTheme x:Key="MoveForwardButtonTheme" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Width" Value="30"/>
+				<Setter Property="Margin" Value="2,0"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="Button">
+							<Border Background="{TemplateBinding Background}" CornerRadius="3">
+								<Viewbox Height="18" Margin="0,0,5,5">
+									<Path Fill="Black" Data="M14 16.94V12.94H5.08L5.05 10.93H14V6.94L19 11.94Z" />
+								</Viewbox>
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+
+				<Style Selector="^:pointerover">
+					<Setter Property="Background" Value="Gray"/>
+				</Style>
+			</ControlTheme>		
+			
+			<ControlTheme x:Key="MoveUpButtonTheme" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Width" Value="30"/>
+				<Setter Property="Margin" Value="2,0"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="Button">
+							<Border Background="{TemplateBinding Background}" CornerRadius="3">
+								<Viewbox Height="18" Margin="0,0,5,5">
+									<Path Fill="Black" Data="M7.03 9.97H11.03V18.89L13.04 18.92V9.97H17.03L12.03 4.97Z" />
+								</Viewbox>
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+
+				<Style Selector="^:pointerover">
+					<Setter Property="Background" Value="Gray"/>
+				</Style>
+			</ControlTheme>
+
+			
+
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="3*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		
+		<StackPanel Grid.Column="0" Orientation="Horizontal">
+			<Button Theme="{StaticResource MoveBackButtonTheme}"/>
+			<Button Theme="{StaticResource MoveForwardButtonTheme}"/>
+			<Button Theme="{StaticResource MoveUpButtonTheme}" Command="{Binding DisplayParentCommand}"/>
+		</StackPanel>
+
+		<TextBox Text="{Binding DisplayedPhysicalObject.Path}"
+				 Grid.Column="1" 
+				 Margin="5"
+				 TextAlignment="Left"
+				 VerticalContentAlignment="Center"
+				 HorizontalAlignment="Stretch"
+				 IsReadOnly="True"/>
+
+		<TextBox Grid.Column="2"
+				 Watermark="Seacth"
+				 Margin="5"
+				 TextAlignment="Left"
+				 VerticalContentAlignment="Center"
+				 HorizontalAlignment="Stretch"/>
+		
+	</Grid>
 </UserControl>

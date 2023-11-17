@@ -6,10 +6,27 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 
-#nullable disable
+#nullable enable
 
 namespace DiskObserver.Avalonia.Model.Implementation {
     public class DirectoryModel : BaseModel, IDirectory {
+        public bool IsVisibleInTree => true;
+
+        public IPhysicalObject ParentPhysicalObject { get; private set; }
+
+        public ObservableCollection<IPhysicalObject>? _physicalObjects { get; set; }
+        public ObservableCollection<IPhysicalObject>? PhysicalObjects {
+            get
+            {
+                if (_physicalObjects == null) {
+                    _physicalObjects = new();
+                    LazyInit();
+                }
+
+                return _physicalObjects;
+            }
+        }
+
 
         private string _name = "";
         public string Name
@@ -23,15 +40,17 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         }
 
         private bool _isHidden;
-        public bool IsHidden
+        public bool IsVisible
         {
             get => _isHidden;
             private set
             {
                 _isHidden = value;
-                OnPropertyChanged(nameof(IsHidden));
+                OnPropertyChanged(nameof(IsVisible));
             }
         }
+
+
         private long _size;
         public long Size
         {
@@ -54,29 +73,24 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        public IPhysicalObject ParentPhysicalObject { get; private set; }
-
-        public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
-        
         public DirectoryModel(DirectoryInfo aDirectoryInfo, IPhysicalObject _parentObject) {
             ParentPhysicalObject = _parentObject;
             Path = aDirectoryInfo.FullName;
 
             Name = aDirectoryInfo.Name;
-            IsHidden = aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
-        }
-
-        public DirectoryModel() {
-
+            IsVisible = !aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
         }
 
         public void Dispose() {
             ParentPhysicalObject = null;
 
-            foreach (var item in PhysicalObjects)
-                item.Dispose();
+            if (_physicalObjects != null && _physicalObjects.Count > 0) {
 
-            PhysicalObjects.Clear();
+                foreach (var item in _physicalObjects)
+                    item.Dispose();
+
+                _physicalObjects.Clear();
+            }
         }
 
 

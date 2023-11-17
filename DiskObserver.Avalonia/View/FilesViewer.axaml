@@ -19,38 +19,10 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="20"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
-
-		<Border BorderBrush="LightGray" BorderThickness="1">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="20"/>
-				</Grid.ColumnDefinitions>
-
-				<TextBlock Grid.Column="0" Text="{Binding DisplayedPhysicalObject.Path}"/>
-				<Button Grid.Column="1" Command="{Binding DisplayParentPhysicalObjectCommand}">
-					<Button.Template>
-						<ControlTemplate>
-							<Border BorderThickness="1,0,0,0" BorderBrush="LightGray" Background="Transparent">
-								<Viewbox Height="15" Width="12" Margin="0,-3,0,0">
-									<Path Fill="Black" Data="M21,11H6.83L10.41,7.41L9,6L3,12L9,18L10.41,16.58L6.83,13H21V11Z" />
-								</Viewbox>
-							</Border>
-						</ControlTemplate>
-					</Button.Template>
-				</Button>
-			</Grid>
-		</Border>
 
 		<ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
                  BorderBrush="LightGray"
-				 Grid.IsSharedSizeScope="True"
-                 Grid.Row="1">
-
+				 Grid.IsSharedSizeScope="True">
 
 			<ListBox.DataTemplates>
 
@@ -65,7 +37,7 @@
 						</Grid.ColumnDefinitions>
 
 						<Viewbox Grid.Row="0" Width="14">
-							<Path Stroke="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
 						</Viewbox>
 
 						<TextBlock Grid.Column="1" Text="{Binding Name}"
@@ -86,7 +58,7 @@
 						</Grid.ColumnDefinitions>
 
 						<Viewbox Grid.Row="0" Width="14">
-							<Path Stroke="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
 						</Viewbox>
 
 						<TextBlock Grid.Column="1" Text="{Binding Name}"
