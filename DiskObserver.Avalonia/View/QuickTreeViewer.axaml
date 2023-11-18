@@ -169,7 +169,7 @@
 		<TreeView Background="White"
 				  ItemsSource="{Binding PhysicalObjects}"
 				  ItemContainerTheme="{StaticResource DefaultTreeViewItem}"
-				  SelectedItem="{Binding DisplayedPhysicalObject}">
+				  SelectedItem="{Binding DisplayedPhysicalObject, Mode=OneWay}">
 
 			<TreeView.DataTemplates>
 

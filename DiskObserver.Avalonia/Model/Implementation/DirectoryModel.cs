@@ -1,6 +1,5 @@
 ﻿using DiskObserver.Avalonia.Model.Interface;
 using DiskObserver.Avalonia.Utils;
-using DynamicData.Experimental;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,9 +12,7 @@ using System.Linq;
 namespace DiskObserver.Avalonia.Model.Implementation {
     public class DirectoryModel : BaseModel, IDirectory {
         public bool IsVisibleInTree => true;
-
-        public IPhysicalObject ParentPhysicalObject { get; private set; }
-
+        public IPhysicalObject? ParentPhysicalObject { get; private set; }
         public ObservableCollection<IPhysicalObject>? _physicalObjects { get; set; }
         public ObservableCollection<IPhysicalObject>? PhysicalObjects {
             get
@@ -76,7 +73,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        private string _path;
+        private string _path = "";
         public string Path {
             get => _path;
             set
@@ -107,7 +104,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
             if (_physicalObjects != null && _physicalObjects.Count > 0) {
 
-                foreach (var item in _physicalObjects)
+                foreach (var item in _physicalObjects.ToList())
                     item.Dispose();
 
                 _physicalObjects.Clear();
@@ -123,7 +120,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
             var aDirectoryInfo = new DirectoryInfo(_path);
 
-            DirectoryInfo[] directoryInfos = null;
+            DirectoryInfo[]? directoryInfos = null;
             try {
                 directoryInfos = aDirectoryInfo.GetDirectories();
             }
@@ -146,11 +143,11 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
                 foreach (DirectoryInfo directoryInfo in directoryInfos) {
                     DirectoryModel directoryModel = new DirectoryModel(directoryInfo, this);
-                    PhysicalObjects.Add(directoryModel);
+                    PhysicalObjects!.Add(directoryModel);
                 }
             }
 
-            FileInfo[] fileInfos = null;
+            FileInfo[]? fileInfos = null;
             try {
                 fileInfos = aDirectoryInfo.GetFiles();
             }
@@ -171,7 +168,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             if (fileInfos != null) {
                 foreach (FileInfo fileInfo in fileInfos) {
                     FileModel fileModel = new FileModel(fileInfo, this);
-                    PhysicalObjects.Add(fileModel);
+                    PhysicalObjects!.Add(fileModel);
                 }
             }
 
@@ -183,8 +180,8 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         public void GetHeavyFiles(List<IFile> aHeavyFiles, int aMaxCount) {
             if (!_inited)
                 LazyInit();
-
-            foreach (IPhysicalObject physicalObject in PhysicalObjects) {
+            
+            foreach (IPhysicalObject physicalObject in PhysicalObjects!) {
                 physicalObject.GetHeavyFiles(aHeavyFiles, aMaxCount);
             }
         }
@@ -236,7 +233,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        FileSystemWatcher _fileSystemWatcher;
+        FileSystemWatcher? _fileSystemWatcher;
         public void ChangePath(string path) {
             if (_fileSystemWatcher != null) {
                 _fileSystemWatcher.Created -= SystemWatcher_Created;
@@ -261,6 +258,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 _fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             }
             catch (Exception ex) {
+                _ = ex;
 
                 if (_fileSystemWatcher != null) {
                     _fileSystemWatcher.Created -= SystemWatcher_Created;
