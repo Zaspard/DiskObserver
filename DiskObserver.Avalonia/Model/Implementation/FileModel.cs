@@ -20,15 +20,27 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        private bool _isHidden;
+        private bool _isVisible;
         public bool IsVisible {
-            get => _isHidden;
+            get => _isVisible;
             private set
             {
-                _isHidden = value;
+                _isVisible = value;
                 OnPropertyChanged(nameof(IsVisible));
             }
         }
+
+
+        private bool _isRenameMode;
+        public bool IsRenameMode {
+            get => _isRenameMode;
+            set
+            {
+                _isRenameMode = value;
+                OnPropertyChanged(nameof(IsRenameMode));
+            }
+        }
+
         private long _size;
         public long Size {
             get => _size;
@@ -48,7 +60,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        private string _path;
+        private string _path = "";
         public string Path
         {
             get => _path;
@@ -60,27 +72,21 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         }
 
         public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; set; } = null;
-        public IPhysicalObject ParentPhysicalObject{ get; private set; }
+        public IPhysicalObject? ParentPhysicalObject{ get; private set; }
         public FileModel(FileInfo aFileInfo, IPhysicalObject _parentObject) {
             ParentPhysicalObject = _parentObject;
             Path = aFileInfo.FullName;
 
             Name = aFileInfo.Name;
-            IsVisible = !aFileInfo.Attributes.HasFlag(FileAttributes.Hidden);
 
-            if (aFileInfo.Extension?.Length > 0)
-                Format = aFileInfo.Extension.Substring(1, aFileInfo.Extension.Length - 1);
-
-            Size = aFileInfo.Length;
+            RefreshProperty(aFileInfo);
         }
 
         public void Dispose() {
             ParentPhysicalObject = null;
         }
 
-        public void Delete() {
-
-        }
+        public void Delete() => File.Delete(Path);
 
         public void LazyInit() {
 
@@ -116,6 +122,19 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 return;
 
             aHeavyFiles.Insert(index, this);
+        }
+
+        public void ChangePath(string path) => Path = path;
+
+        public void RefreshProperty(FileInfo? aFileInfo) {
+
+            FileInfo fileInfo = aFileInfo ?? new FileInfo(Path);
+            IsVisible = !fileInfo.Attributes.HasFlag(FileAttributes.Hidden);
+
+            if (fileInfo.Extension?.Length > 0)
+                Format = fileInfo.Extension.Substring(1, fileInfo.Extension.Length - 1);
+
+            Size = fileInfo.Length;
         }
     }
 }

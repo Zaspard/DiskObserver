@@ -99,7 +99,7 @@
 				 IsReadOnly="True"/>
 
 		<TextBox Grid.Column="2"
-				 Watermark="Seacth"
+				 Watermark="Search"
 				 Margin="5"
 				 TextAlignment="Left"
 				 VerticalContentAlignment="Center"

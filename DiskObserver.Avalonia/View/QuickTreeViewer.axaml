@@ -4,6 +4,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:converters="clr-namespace:DiskObserver.Avalonia.View.Converters"
+			 xmlns:behaviors="clr-namespace:DiskObserver.Avalonia.Utils.Behaviors"
 			 xmlns:interface="clr-namespace:DiskObserver.Avalonia.Model.Interface"
 			 xmlns:model="clr-namespace:DiskObserver.Avalonia.Model.Implementation"
 			 x:Name="root"
@@ -49,7 +50,21 @@
 						<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
 					</Viewbox>
 
-					<TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5,0,0,0"/>
+					<TextBlock Grid.Column="1" Text="{Binding Name}" IsVisible="{Binding !IsRenameMode}" Margin="5,0,0,0">
+						<!--<Interaction.Behaviors>
+							<behaviors:KeyDownBehavior Key="F2">
+								<InvokeCommandAction Command="{Binding RenameItemCommand, ElementName=root}" CommandParameter="{Binding}"/>
+							</behaviors:KeyDownBehavior>
+						</Interaction.Behaviors> -->
+					</TextBlock>
+
+					<TextBox Grid.Column="1" IsVisible="{Binding IsRenameMode}" Margin="5,0,0,0">
+						<Interaction.Behaviors>
+							<behaviors:KeyDownBehavior Key="Enter">
+								<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+							</behaviors:KeyDownBehavior>
+						</Interaction.Behaviors>
+					</TextBox>
 					
 					<Interaction.Behaviors>
 						<EventTriggerBehavior EventName="PointerPressed">
@@ -117,16 +132,31 @@
 			<ContextMenu x:Key="DictionatyContextMenu">
 				<MenuItem Header="Copy"
 						  PointerReleased="Copy_PointerReleased"/>
+				
 				<MenuItem Header="Cut"
 						  PointerReleased="Cut_PointerReleased"/>
+				
 				<MenuItem Header="Paste"
 						  PointerReleased="Paste_PointerReleased"/>
+				
+				<Separator/>
+
+				<MenuItem Header="Delete"
+						  PointerReleased="Delete_PointerReleased"/>
+				
 				<MenuItem Header="Rename"
 						  PointerReleased="Rename_PointerReleased"/>
+				
+				<Separator/>
+				
 				<MenuItem Header="Properties"
 						  PointerReleased="Properties_PointerReleased"/>
+				
+				<Separator/>
+				
 				<MenuItem Header="Add to quick access"
 						  PointerReleased="AddToQuickAccess_PointerReleased"/>
+				
 				<MenuItem Header="Remove from quick access"
 						  PointerReleased="RemoveFromQuickAccess_PointerReleased"/>
 			</ContextMenu>

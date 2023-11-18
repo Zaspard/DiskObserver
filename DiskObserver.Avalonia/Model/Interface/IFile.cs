@@ -1,8 +1,11 @@
-﻿namespace DiskObserver.Avalonia.Model.Interface {
+﻿using System.IO;
+
+namespace DiskObserver.Avalonia.Model.Interface {
     public interface IFile : IPhysicalObject {
-        public string Name { get; set; }
         public bool IsVisible { get; }
+        public bool IsRenameMode { get; set; }
         public long Size { get; }
         public string Format { get; }
+        void RefreshProperty(FileInfo? fileInfo = null);
     }
 }

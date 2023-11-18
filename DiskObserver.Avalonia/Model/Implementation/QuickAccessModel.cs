@@ -1,4 +1,5 @@
 ﻿using DiskObserver.Avalonia.Model.Interface;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,7 +9,8 @@ namespace DiskObserver.Avalonia.Model.Implementation {
     public sealed class QuickAccessModel : IPhysicalObject {
         public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; set; } = new();
 
-        public string Path => "";
+        public string Path { get => ""; set => throw new NotImplementedException(); }
+        public string Name { get => ""; set => throw new NotImplementedException(); }
 
         public bool IsVisibleInTree => true;
 
@@ -23,5 +25,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
         public void GetHeavyFiles(List<IFile> heavyFiles, int maxCount) {}
         public void LazyInit() {}
+        public void ChangePath(string path) => throw new NotImplementedException();
+        public void Delete() => throw new NotImplementedException();
     }
 }

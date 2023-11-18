@@ -37,6 +37,13 @@ namespace DiskObserver.Avalonia.View {
 
             if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
                 ViewModel.RenameItem(physicalObject);
+        }       
+        private void Delete_PointerReleased(object? sender, PointerReleasedEventArgs e) {
+            if (ViewModel == null)
+                return;
+
+            if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
+                ViewModel.DeleteItem(physicalObject);
         }
         private void Properties_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)

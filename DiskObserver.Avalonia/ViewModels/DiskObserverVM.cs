@@ -14,7 +14,9 @@ namespace DiskObserver.Avalonia.ViewModels {
         public ReactiveCommand<IPhysicalObject, Unit> DisplayPhysicalObjectCommand => 
                                                         ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));
         public ReactiveCommand<Unit, Unit> DisplayParentCommand =>
-                                                        ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
+                                                        ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject)); 
+        public ReactiveCommand<IPhysicalObject, Unit> RenameItemCommand =>
+                                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => RenameItem(physicalObject));
 
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
         QuickAccessModel _quickAccessModel;
@@ -93,18 +95,30 @@ namespace DiskObserver.Avalonia.ViewModels {
         }
 
         internal void RenameItem(IPhysicalObject physicalObject) {
+            if (physicalObject is IFile file)
+                file.IsRenameMode = true;
+            else if (physicalObject is IDirectory directory)
+                directory.IsRenameMode = true;
         }
 
         internal void ShowPropertyItem(IPhysicalObject physicalObject) {
+
         }
 
         internal void Paste(IPhysicalObject physicalObject) {
+
         }
 
         internal void Cut(IPhysicalObject physicalObject) {
+
         }
 
         internal void Copy(IPhysicalObject physicalObject) {
+
+        }
+
+        internal void DeleteItem(IPhysicalObject physicalObject) {
+            physicalObject.Delete();
         }
     }
 }

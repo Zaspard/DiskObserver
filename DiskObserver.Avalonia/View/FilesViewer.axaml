@@ -22,6 +22,7 @@
 
 		<ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
                  BorderBrush="LightGray"
+				 SelectionMode="Multiple"
 				 Grid.IsSharedSizeScope="True">
 
 			<ListBox.DataTemplates>

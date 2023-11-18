@@ -1,5 +1,6 @@
 ﻿using DiskObserver.Avalonia.Model.Interface;
 using DiskObserver.Avalonia.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,10 +13,10 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         public bool IsVisibleInTree => true;
         public IPhysicalObject? ParentPhysicalObject { get; private set; } = null;
         ObservableCollection<IPhysicalObject>? _physicalObjects = null;
-        public ObservableCollection<IPhysicalObject>? PhysicalObjects { 
+        public ObservableCollection<IPhysicalObject>? PhysicalObjects {
             get
             {
-                if(_physicalObjects == null) {
+                if (_physicalObjects == null) {
                     _physicalObjects = new();
                     LazyInit();
                 }
@@ -27,7 +28,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         string _name = "";
         public string Name {
             get => _name;
-            private set
+            set
             {
                 _name = value;
                 OnPropertyChanged(nameof(Name));
@@ -158,5 +159,8 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 physicalObject.GetHeavyFiles(aHeavyFiles, aMaxCount);
             }
         }
+
+        public void ChangePath(string path) => throw new NotImplementedException();
+        public void Delete() => throw new NotImplementedException();
     }
 }

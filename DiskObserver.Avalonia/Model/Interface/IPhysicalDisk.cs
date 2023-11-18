@@ -2,7 +2,6 @@
 
 namespace DiskObserver.Avalonia.Model.Interface {
     public interface IPhysicalDisk : IPhysicalObject, IDisposable {
-        public string Name { get; }
         public string Format { get; }
         public long TotalMemory { get; }
         public long FreeMemory { get; }
