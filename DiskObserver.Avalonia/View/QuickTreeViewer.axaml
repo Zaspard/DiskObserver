@@ -14,6 +14,7 @@
 		<ResourceDictionary>
 			
 			<converters:SizeConverter x:Key="SizeConverter"/>
+			<converters:NameConverter x:Key="NameConverter"/>
 
 			<DataTemplate x:Key="PhysicalDiskDataTemplate" DataType="{x:Type interface:IPhysicalDisk}">
 				<Grid Margin="0,0,2,0" Background="Transparent">
@@ -167,19 +168,21 @@
 
 	<Grid>
 		<TreeView Background="White"
-				  ItemsSource="{Binding PhysicalObjects}"
+				  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}"
 				  ItemContainerTheme="{StaticResource DefaultTreeViewItem}"
 				  SelectedItem="{Binding DisplayedPhysicalObject, Mode=OneWay}">
 
 			<TreeView.DataTemplates>
 
+				<!-- TODO: https://github.com/AvaloniaUI/Avalonia/issues/10379 -->
 				<TreeDataTemplate DataType="{x:Type interface:IPhysicalDisk}" 
-								  ItemsSource="{Binding PhysicalObjects}">
+								  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}">
 					<ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource PhysicalDiskDataTemplate}"/>
 				</TreeDataTemplate>
 
+				<!-- TODO: https://github.com/AvaloniaUI/Avalonia/issues/10379 -->
 				<TreeDataTemplate DataType="{x:Type interface:IDirectory}"
-								  ItemsSource="{Binding PhysicalObjects}">
+								  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}">
 					<ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource DirectoryDataTemplate}"/>
 				</TreeDataTemplate>
 
