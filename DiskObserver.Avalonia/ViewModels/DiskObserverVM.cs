@@ -79,7 +79,7 @@ namespace DiskObserver.Avalonia.ViewModels {
             }
 
             PhysicalObjects.Clear();
-
+            Clipboard.Clear();
         }
 
         public void DisplayPhysicalObject(IPhysicalObject physicalObject, MoveMode moveMode = MoveMode.Normal) {
@@ -122,23 +122,84 @@ namespace DiskObserver.Avalonia.ViewModels {
             //TODO: Some shit window?
         }
 
-        internal void Paste(IPhysicalObject physicalObject) {
 
-        }
-
-        internal void Cut(IPhysicalObject physicalObject) {
-
-        }
+        List<(bool, string, bool)> Clipboard = new();
 
         internal void Copy(IPhysicalObject physicalObject) {
+            Clipboard.Clear();
+            Clipboard.Add((physicalObject is IFile, physicalObject.Path, false));
+        }
+        internal void Copy(IEnumerable<IPhysicalObject> physicalObjects) {
+            Clipboard.Clear();
+        }
+        internal void Cut(IPhysicalObject physicalObject) {
+            Clipboard.Clear();
+            Clipboard.Add((physicalObject is IFile, physicalObject.Path, true));
+        }
+        internal void Cut(IEnumerable<IPhysicalObject> physicalObjects) {
+            Clipboard.Clear();
+        }
+        internal void Paste(IPhysicalObject physicalObject) {
 
+            if (Clipboard.Count <= 0)
+                return;
+
+            var haveFileNotifyer = physicalObject as IHaveFileNotifyer;
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = true;
+
+            foreach ((bool isFile, string path, bool removeFlag) in Clipboard) {
+
+                if (isFile) {
+
+
+                    //string nameItem = Path.GetFileName(path);
+                    //string sourcePath = Path.Combine(physicalObject.Path, nameItem);
+                    //File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                    //FileInfo fileInfo = new FileInfo(sourcePath);
+                    //
+                    //if (removeFlag) {
+                    //
+                    //}
+                }
+                else {
+
+                    string nameItem = Path.GetFileName(path);
+                    string sourcePath = Path.Combine(physicalObject.Path, nameItem);
+                    CopyFilesRecursively(path, sourcePath);
+
+                    var directoryInfo = new DirectoryInfo(sourcePath);  
+                    DirectoryModel directoryModel = new DirectoryModel(directoryInfo, physicalObject);
+                    physicalObject.PhysicalObjects!.Add(directoryModel);
+
+                    if (removeFlag) {
+                        Directory.Delete(path, true);
+                    }
+                }
+            }
+
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = false;
+
+            Clipboard.Clear();
+        }
+
+        private static void CopyFilesRecursively(string sourcePath, string targetPath) {
+            if (!Directory.Exists(targetPath))
+                Directory.CreateDirectory(targetPath);
+
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories)) {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories)) {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }
         }
 
         internal void DeleteItem(IPhysicalObject physicalObject) {
             physicalObject.Delete();
         }
-
-
 
         void TryMoveToPath(string path, MoveMode moveMode = MoveMode.Normal) {
             if (path == DisplayedPhysicalObject?.Path)

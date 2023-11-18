@@ -10,7 +10,7 @@ using System.Linq;
 #nullable enable
 
 namespace DiskObserver.Avalonia.Model.Implementation {
-    public class DirectoryModel : BaseModel, IDirectory {
+    public class DirectoryModel : BaseModel, IDirectory, IHaveFileNotifyer {
         public bool IsVisibleInTree => true;
         public IPhysicalObject? ParentPhysicalObject { get; private set; }
         public ObservableCollection<IPhysicalObject>? _physicalObjects { get; set; }
@@ -94,13 +94,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         public void Dispose() {
             ParentPhysicalObject = null;
 
-            if (_fileSystemWatcher != null) {
-                _fileSystemWatcher.Created -= SystemWatcher_Created;
-                _fileSystemWatcher.Changed -= SystemWatcher_Changed;
-                _fileSystemWatcher.Deleted -= SystemWatcher_Deleted;
-                _fileSystemWatcher.Renamed -= SystemWatcher_Renamed;
-                _fileSystemWatcher.Dispose();
-            }
+            DisposeSubscriber();
 
             if (_physicalObjects != null && _physicalObjects.Count > 0) {
 
@@ -204,6 +198,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
             string newPath = Path.Remove(Path.Length - Name.Length) + newName;
 
+            IgnoreAllNotify = true;
             try {
                 var aDirectoryInfo = new DirectoryInfo(Path);
                 aDirectoryInfo.MoveTo(newPath);
@@ -212,6 +207,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 IsRenameMode = false;
                 return false;
             }
+            IgnoreAllNotify = false;
 
             ChangePath(newPath);
             RefreshPathInInnerItems(this, newPath);
@@ -233,20 +229,20 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
-        FileSystemWatcher? _fileSystemWatcher;
+        
         public void ChangePath(string path) {
-            if (_fileSystemWatcher != null) {
-                _fileSystemWatcher.Created -= SystemWatcher_Created;
-                _fileSystemWatcher.Changed -= SystemWatcher_Changed;
-                _fileSystemWatcher.Deleted -= SystemWatcher_Deleted;
-                _fileSystemWatcher.Renamed -= SystemWatcher_Renamed;
-                _fileSystemWatcher.Dispose();
-            }
+            DisposeSubscriber();
 
             Path = path;
 
-            try {
+            TrySubcribe();
+        }
 
+
+        public bool IgnoreAllNotify { get; set; }
+        FileSystemWatcher? _fileSystemWatcher;
+        public void TrySubcribe() {
+            try {
                 _fileSystemWatcher = new(Path);
                 _fileSystemWatcher.Created += SystemWatcher_Created;
                 _fileSystemWatcher.Changed += SystemWatcher_Changed;
@@ -267,11 +263,23 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                     _fileSystemWatcher.Renamed -= SystemWatcher_Renamed;
                     _fileSystemWatcher.Dispose();
                 }
+            }
+        }
 
+        public void DisposeSubscriber() {
+            if (_fileSystemWatcher != null) {
+                _fileSystemWatcher.Created -= SystemWatcher_Created;
+                _fileSystemWatcher.Changed -= SystemWatcher_Changed;
+                _fileSystemWatcher.Deleted -= SystemWatcher_Deleted;
+                _fileSystemWatcher.Renamed -= SystemWatcher_Renamed;
+                _fileSystemWatcher.Dispose();
             }
         }
 
         private void SystemWatcher_Created(object sender, FileSystemEventArgs e) {
+
+            if (IgnoreAllNotify)
+                return;
 
             if (System.IO.Path.Exists(e.FullPath)) {
 
@@ -330,6 +338,9 @@ namespace DiskObserver.Avalonia.Model.Implementation {
 
         private void SystemWatcher_Changed(object sender, FileSystemEventArgs e) {
 
+            if (IgnoreAllNotify)
+                return;
+
             var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.Name);
             if (item is IFile file) {
                 file.RefreshProperty();
@@ -337,6 +348,9 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         }
 
         private void SystemWatcher_Renamed(object sender, RenamedEventArgs e) {
+
+            if (IgnoreAllNotify)
+                return;
 
             var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.OldName);
             if (item != null) {
@@ -356,6 +370,9 @@ namespace DiskObserver.Avalonia.Model.Implementation {
         }
 
         private void SystemWatcher_Deleted(object sender, FileSystemEventArgs e) {
+
+            if (IgnoreAllNotify)
+                return;
 
             var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.Name);
             if (item != null) {
