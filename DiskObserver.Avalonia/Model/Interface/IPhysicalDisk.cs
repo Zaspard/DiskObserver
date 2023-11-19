@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DiskObserver.Avalonia.Model.Interface {
+namespace DiskObserver.Model.Interface {
     public interface IPhysicalDisk : IPhysicalObject, IDisposable {
         public string Format { get; }
         public long TotalMemory { get; }

@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using DiskObserver.Avalonia.Model.Interface;
-using DiskObserver.Avalonia.ViewModels;
+using DiskObserver.Model.Interface;
+using DiskObserver.ViewModels;
 
-namespace DiskObserver.Avalonia.View {
+namespace DiskObserver.View {
     public partial class QuickTreeViewer : UserControl {
         public QuickTreeViewer() {
             InitializeComponent();

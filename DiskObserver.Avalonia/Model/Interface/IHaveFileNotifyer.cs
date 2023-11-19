@@ -1,4 +1,4 @@
-﻿namespace DiskObserver.Avalonia.Model.Interface {
+﻿namespace DiskObserver.Model.Interface {
     public interface IHaveFileNotifyer {
         public bool IgnoreAllNotify { get; set; }
         public void TrySubcribe();

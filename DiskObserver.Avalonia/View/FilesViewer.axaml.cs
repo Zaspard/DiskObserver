@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace DiskObserver.Avalonia.View {
+namespace DiskObserver.View {
     public partial class FilesViewer : UserControl {
 
         //public static readonly StyledProperty<double> XProperty

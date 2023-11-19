@@ -1,5 +1,5 @@
-﻿using DiskObserver.Avalonia.Model.Interface;
-using DiskObserver.Avalonia.Utils;
+﻿using DiskObserver.Model.Interface;
+using DiskObserver.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ using System.Linq;
 
 #nullable enable
 
-namespace DiskObserver.Avalonia.Model.Implementation {
+namespace DiskObserver.Model.Implementation {
     public class DirectoryModel : BaseModel, IDirectory, IHaveFileNotifyer {
         public bool IsVisibleInTree => true;
         public IPhysicalObject? ParentPhysicalObject { get; private set; }

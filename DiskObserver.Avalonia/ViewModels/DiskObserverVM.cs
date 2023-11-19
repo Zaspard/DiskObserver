@@ -1,6 +1,6 @@
-﻿using DiskObserver.Avalonia.Model.Implementation;
-using DiskObserver.Avalonia.Model.Interface;
-using DiskObserver.Avalonia.Utils;
+﻿using DiskObserver.Model.Implementation;
+using DiskObserver.Model.Interface;
+using DiskObserver.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Reactive;
 
 #nullable disable
 
-namespace DiskObserver.Avalonia.ViewModels {
+namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
         public ReactiveCommand<IPhysicalObject, Unit> DisplayPhysicalObjectCommand => 
                                                         ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));

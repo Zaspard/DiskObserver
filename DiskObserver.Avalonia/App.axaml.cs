@@ -1,9 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using DiskObserver.Avalonia.ViewModels;
+using DiskObserver.ViewModels;
 
-namespace DiskObserver.Avalonia;
+namespace DiskObserver;
 
 public partial class App : Application
 {

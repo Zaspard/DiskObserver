@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace DiskObserver.Avalonia.View.Converters {
+namespace DiskObserver.View.Converters {
     public class SizeConverter : IValueConverter {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 

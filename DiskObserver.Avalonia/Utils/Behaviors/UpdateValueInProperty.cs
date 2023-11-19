@@ -9,7 +9,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 
 
-namespace DiskObserver.Avalonia.Utils.Behaviors
+namespace DiskObserver.Utils.Behaviors
 {
     public class UpdateValueInProperty : AvaloniaObject, IBehavior, IAction
     {

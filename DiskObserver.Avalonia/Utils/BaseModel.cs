@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 #nullable disable
 
-namespace DiskObserver.Avalonia.Utils {
+namespace DiskObserver.Utils {
     public class BaseModel : INotifyPropertyChanged {
 
         public event PropertyChangedEventHandler PropertyChanged;

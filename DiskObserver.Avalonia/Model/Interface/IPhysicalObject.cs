@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace DiskObserver.Avalonia.Model.Interface {
+namespace DiskObserver.Model.Interface {
     public interface IPhysicalObject : IDisposable {
         public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; }
         public string Name { get; internal set; }

@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace DiskObserver.Avalonia.View.Converters
+namespace DiskObserver.View.Converters
 {
     public class BoolToOpacityConverter : IValueConverter
     {

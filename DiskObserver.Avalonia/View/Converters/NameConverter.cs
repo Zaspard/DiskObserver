@@ -1,12 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
-using DiskObserver.Avalonia.Model.Interface;
+using DiskObserver.Model.Interface;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace DiskObserver.Avalonia.View.Converters {
+namespace DiskObserver.View.Converters {
     public class NameConverter : IValueConverter {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 

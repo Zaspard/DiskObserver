@@ -1,11 +1,11 @@
-﻿using DiskObserver.Avalonia.Model.Interface;
+﻿using DiskObserver.Model.Interface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 #nullable enable
 
-namespace DiskObserver.Avalonia.Model.Implementation {
+namespace DiskObserver.Model.Implementation {
     public sealed class QuickAccessModel : IPhysicalObject {
         public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; set; } = new();
 

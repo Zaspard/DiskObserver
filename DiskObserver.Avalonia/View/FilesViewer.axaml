@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:converters="clr-namespace:DiskObserver.Avalonia.View.Converters"
-			 xmlns:model="clr-namespace:DiskObserver.Avalonia.Model.Implementation"
-             x:Class="DiskObserver.Avalonia.View.FilesViewer">
+			 xmlns:converters="clr-namespace:DiskObserver.View.Converters"
+			 xmlns:model="clr-namespace:DiskObserver.Model.Implementation"
+             x:Class="DiskObserver.View.FilesViewer">
 	
 	<UserControl.Resources>
 		<converters:SizeConverter x:Key="SizeConverter"/>

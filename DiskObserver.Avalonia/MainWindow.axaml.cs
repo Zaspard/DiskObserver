@@ -1,7 +1,7 @@
 using Avalonia.Controls;
-using DiskObserver.Avalonia.ViewModels;
+using DiskObserver.ViewModels;
 
-namespace DiskObserver.Avalonia {
+namespace DiskObserver {
     public partial class MainWindow : Window {
         DiskObserverVM? _diskObserverVM;
         public MainWindow(DiskObserverVM diskObserverVM) {

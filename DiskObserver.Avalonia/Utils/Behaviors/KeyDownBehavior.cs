@@ -6,7 +6,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 
-namespace DiskObserver.Avalonia.Utils.Behaviors {
+namespace DiskObserver.Utils.Behaviors {
     public class KeyDownBehavior : Trigger {
         public static readonly StyledProperty<Key?> KeyProperty =
             AvaloniaProperty.Register<KeyDownBehavior, Key?>(nameof(Key));

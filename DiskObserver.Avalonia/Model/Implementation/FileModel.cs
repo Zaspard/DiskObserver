@@ -1,5 +1,5 @@
-﻿using DiskObserver.Avalonia.Model.Interface;
-using DiskObserver.Avalonia.Utils;
+﻿using DiskObserver.Model.Interface;
+using DiskObserver.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.IO;
 
 #nullable enable
 
-namespace DiskObserver.Avalonia.Model.Implementation {
+namespace DiskObserver.Model.Implementation {
     public class FileModel : BaseModel, IFile {
         public bool IsVisibleInTree => false;
 
