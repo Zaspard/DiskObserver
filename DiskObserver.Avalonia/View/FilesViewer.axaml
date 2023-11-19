@@ -4,74 +4,511 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:converters="clr-namespace:DiskObserver.View.Converters"
-			 xmlns:model="clr-namespace:DiskObserver.Model.Implementation"
+			 xmlns:local="clr-namespace:DiskObserver.View"
+			 xmlns:interface="clr-namespace:DiskObserver.Model.Interface"
+			 x:Name="root"
              x:Class="DiskObserver.View.FilesViewer">
 	
 	<UserControl.Resources>
+		
 		<converters:SizeConverter x:Key="SizeConverter"/>
+		<converters:RadioButtonEnumConverter x:Key="RadioButtonEnum"/>
 
-		<ContextMenu x:Key="DirectoryContextMenu">
+		<ContextMenu x:Key="PhysicalObjectContextMenu">
+			<MenuItem Header="Copy"
+					  PointerReleased="Copy_PointerReleased"/>
+
+			<MenuItem Header="Cut"
+					  PointerReleased="Cut_PointerReleased"/>
+
+			<MenuItem Header="Paste"
+					  PointerReleased="Paste_PointerReleased"/>
+
+			<Separator/>
+
+			<MenuItem Header="Delete"
+					  PointerReleased="Delete_PointerReleased"/>
+
+			<MenuItem Header="Rename"
+					  PointerReleased="Rename_PointerReleased"/>
+
+			<Separator/>
+
+			<MenuItem Header="Properties"
+					  PointerReleased="Properties_PointerReleased"/>
+
+			<Separator/>
+
+			<MenuItem Header="Add to quick access"
+					  PointerReleased="AddToQuickAccess_PointerReleased"/>
+
+			<MenuItem Header="Remove from quick access"
+					  PointerReleased="RemoveFromQuickAccess_PointerReleased"/>
 		</ContextMenu>
 
-		<ContextMenu x:Key="FileContextMenu">
-		</ContextMenu>
+		<ContextMenu x:Key="SpaceContextMenu">
+			
+			<MenuItem Header="View">
+				<MenuItem Header="ExtraLargeIcons" PointerReleased="ViewMode_PointerReleased" CommandParameter="ExtraLargeIcons"/>
+				<MenuItem Header="LargeIcons" PointerReleased="ViewMode_PointerReleased" CommandParameter="LargeIcons"/>
+				<MenuItem Header="MediumIcons" PointerReleased="ViewMode_PointerReleased" CommandParameter="MediumIcons"/>
+				<MenuItem Header="SmallIcons" PointerReleased="ViewMode_PointerReleased" CommandParameter="SmallIcons"/>
+				<MenuItem Header="List" PointerReleased="ViewMode_PointerReleased" CommandParameter="List"/>
+				<MenuItem Header="Details" PointerReleased="ViewMode_PointerReleased" CommandParameter="Details"/>
+				<MenuItem Header="Tiles" PointerReleased="ViewMode_PointerReleased" CommandParameter="Tiles"/>
+				<MenuItem Header="Content" PointerReleased="ViewMode_PointerReleased" CommandParameter="Content"/>
+			</MenuItem>
+			
+			<MenuItem Header="Sort">
+				<MenuItem Header="Name" PointerReleased="SortMode_PointerReleased" CommandParameter="Name"/>
+				<MenuItem Header="LastWrite" PointerReleased="SortMode_PointerReleased" CommandParameter="LastWrite"/>
+				<MenuItem Header="Type" PointerReleased="SortMode_PointerReleased" CommandParameter="Type"/>
+				<MenuItem Header="Size" PointerReleased="SortMode_PointerReleased" CommandParameter="Size"/>
 
+				<Separator/>
+				
+				<RadioButton GroupName="SortMode" IsChecked="{Binding IsSortAscending}" Content="SortAscending"/>
+				<RadioButton GroupName="SortMode" IsChecked="{Binding !IsSortAscending}" Content="SortDescending"/>
+			</MenuItem>
+			
+			<MenuItem Header="Group">
+				<MenuItem Header="None" PointerReleased="GroupMode_PointerReleased" CommandParameter="None"/>
+				<MenuItem Header="Name" PointerReleased="GroupMode_PointerReleased" CommandParameter="Name"/>
+				<MenuItem Header="LastWrite" PointerReleased="GroupMode_PointerReleased" CommandParameter="LastWrite"/>
+				<MenuItem Header="Type" PointerReleased="GroupMode_PointerReleased" CommandParameter="Type"/>
+				<MenuItem Header="Size" PointerReleased="GroupMode_PointerReleased" CommandParameter="Size"/>
+				
+				<Separator/>
+
+				<RadioButton GroupName="GroupMode" IsChecked="{Binding IsGroupAscending}" Content="GroupAscending"/>
+				<RadioButton GroupName="GroupMode" IsChecked="{Binding !IsGroupAscending}" Content="GroupDescending"/>
+			</MenuItem>
+
+			<MenuItem Header="Properties" PointerReleased="Properties_PointerReleased"/>
+			
+		</ContextMenu>
+		
 	</UserControl.Resources>
 
 
-	<ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
-			 BorderBrush="LightGray"
-			 SelectionMode="Multiple"
-			 Grid.IsSharedSizeScope="True">
+	<UserControl.DataTemplates>
+		
+		<local:DataTypeContainer Name="ExtraLargeIcons">
+			
+			<local:DataTypeContainer.DataTemplates>
+				
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
 
-		<ListBox.DataTemplates>
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="150"
+						  RowDefinitions="*,Auto">
+						
+						<Viewbox Grid.Row="0" Width="140" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
 
-			<DataTemplate DataType="{x:Type model:DirectoryModel}">
-				<Grid Margin="5,0,2,0" ContextMenu="{StaticResource DirectoryContextMenu}" Background="Transparent">
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
 
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
-						<ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-					</Grid.ColumnDefinitions>
+					</Grid>
+				</DataTemplate>
 
-					<Viewbox Grid.Row="0" Width="14">
-						<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
-					</Viewbox>
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="150"
+						  RowDefinitions="*,Auto">
 
-					<TextBlock Grid.Column="1" Text="{Binding Name}"
-							   ToolTip.Tip="{Binding Name}"
-							   Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+						<Viewbox Grid.Row="0" Width="140"  Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
 
-				</Grid>
-			</DataTemplate>
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
 
-			<DataTemplate DataType="{x:Type model:FileModel}">
-				<Grid Margin="5,0,2,0" ContextMenu="{StaticResource FileContextMenu}" Background="Transparent">
+					</Grid>
+				</DataTemplate>
+				
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
 
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
-						<ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-					</Grid.ColumnDefinitions>
+		<local:DataTypeContainer Name="LargeIcons">
 
-					<Viewbox Grid.Row="0" Width="14">
-						<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
-					</Viewbox>
+			<local:DataTypeContainer.DataTemplates>
 
-					<TextBlock Grid.Column="1" Text="{Binding Name}"
-							   ToolTip.Tip="{Binding Name}"
-							   Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
-					<TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource SizeConverter}}"
-							   Margin="15,0,25,0"/>
-					<TextBlock Grid.Column="3" Text="{Binding Format}"
-							   Margin="15,0,0,0"/>
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
 
-				</Grid>
-			</DataTemplate>
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="100"
+						  RowDefinitions="*,Auto">
 
-		</ListBox.DataTemplates>
-	</ListBox>
+						<Viewbox Grid.Row="0" Width="90" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="100"
+						  RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Row="0" Width="90"  Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="MediumIcons">
+
+			<local:DataTypeContainer.DataTemplates>
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="50"
+						  RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Row="0" Width="40" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  Width="50"
+						  RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Row="0" Width="40"  Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Row="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="0,5,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="SmallIcons">
+
+			<local:DataTypeContainer.DataTemplates>
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Width="20" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Width="20"  Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="List">
+
+			<local:DataTypeContainer.DataTemplates>
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Width="20" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Width="20"  Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Center"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="Details">
+
+			<local:DataTypeContainer.DataTemplates>
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left">
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
+							<ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="LastWriteGroup"/>
+						</Grid.ColumnDefinitions>
+
+						<Viewbox Grid.Row="0" Width="14">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Grid.Column="1" Text="{Binding Name}"
+								   ToolTip.Tip="{Binding Name}"
+								   Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}" 
+						  Background="Transparent" HorizontalAlignment="Left">
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
+							<ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="LastWriteGroup"/>
+						</Grid.ColumnDefinitions>
+
+						<Viewbox Grid.Row="0" Width="14">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Grid.Column="1" Text="{Binding Name}"
+								   ToolTip.Tip="{Binding Name}"
+								   Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
+						
+						<TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource SizeConverter}}"
+								   Margin="15,0,25,0"/>
+						
+						<TextBlock Grid.Column="3" Text="{Binding Type}"
+								   Margin="15,0,0,0"/>
+						
+						<TextBlock Grid.Column="4" Text="{Binding LastWrite}"
+								   Margin="15,0,0,0"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="Tiles">
+
+			<local:DataTypeContainer.DataTemplates>
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Grid.RowSpan="2" Width="40" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+ 
+						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Left"
+						  ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Grid.RowSpan="2" Width="40" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBlock Text="{Binding Type}" Grid.Column="1" Grid.Row="1"
+								   ToolTip.Tip="{Binding Type}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+
+		<local:DataTypeContainer Name="Content">
+
+			<local:DataTypeContainer.DataTemplates>
+
+
+				<DataTemplate DataType="{x:Type interface:IDirectory}">
+
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Stretch"
+						  ColumnDefinitions="40, *, Auto" RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Grid.RowSpan="2" Width="40" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBlock Text="{Binding LastWrite}" Grid.Column="2" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+				<DataTemplate DataType="{x:Type interface:IFile}">
+					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  Background="Transparent" HorizontalAlignment="Stretch"
+						  ColumnDefinitions="40, *, Auto" RowDefinitions="*,Auto">
+
+						<Viewbox Grid.Column="0" Grid.RowSpan="2" Width="40" Margin="0,0,10,0">
+							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+						</Viewbox>
+
+						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBlock Text="{Binding Type}" Grid.Column="1" Grid.Row="1"
+								   ToolTip.Tip="{Binding Type}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBlock Text="{Binding LastWrite}" Grid.Column="2" Grid.Row="0"
+								   ToolTip.Tip="{Binding Name}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBlock Text="{Binding Size, Converter={StaticResource SizeConverter}}" Grid.Column="2" Grid.Row="1"
+								   ToolTip.Tip="{Binding Size, Converter={StaticResource SizeConverter}}"
+								   HorizontalAlignment="Left"
+								   Background="Transparent" Margin="5,0,0,0"
+								   TextTrimming="CharacterEllipsis"/>
+
+					</Grid>
+				</DataTemplate>
+
+			</local:DataTypeContainer.DataTemplates>
+		</local:DataTypeContainer>
+		
+	</UserControl.DataTemplates>
+
+	<Grid ContextMenu="{StaticResource SpaceContextMenu}">
+		
+		<ListBox x:Name="listBox" 
+				 Background="White" 
+				 SelectionMode="Multiple"
+				 Grid.IsSharedSizeScope="True"/>
+	</Grid>
+
 </UserControl>

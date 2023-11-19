@@ -11,6 +11,9 @@ namespace DiskObserver.Model.Implementation {
 
         public string Path { get => ""; set => throw new NotImplementedException(); }
         public string Name { get => ""; set => throw new NotImplementedException(); }
+        public DateTime LastWrite { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public long Size { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Type { get; set; } = "QuickAccess";
 
         public bool IsVisibleInTree => true;
 

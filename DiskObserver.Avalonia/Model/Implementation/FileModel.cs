@@ -51,13 +51,13 @@ namespace DiskObserver.Model.Implementation {
                 OnPropertyChanged(nameof(Size));
             }
         }
-        private string _format = "";
-        public string Format {
-            get => _format;
-            set
+        private string _type = "";
+        public string Type {
+            get => _type;
+            private set
             {
-                _format = value;
-                OnPropertyChanged(nameof(Format));
+                _type = value;
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -143,7 +143,7 @@ namespace DiskObserver.Model.Implementation {
             IsVisible = !fileInfo.Attributes.HasFlag(FileAttributes.Hidden);
 
             if (fileInfo.Extension?.Length > 0)
-                Format = fileInfo.Extension.Substring(1, fileInfo.Extension.Length - 1);
+                Type = fileInfo.Extension.Substring(1, fileInfo.Extension.Length - 1);
 
             Size = fileInfo.Length;
             LastWrite = fileInfo.LastWriteTime;

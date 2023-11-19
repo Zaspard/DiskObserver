@@ -96,6 +96,9 @@ namespace DiskObserver.Model.Implementation {
             }
         }
 
+        public DateTime LastWrite { get; }
+        public long Size { get; } = 0;
+        public string Type { get; } = "Disk";
 
         private DriveInfo _driveInfo;
         public PhysicalDisk(DriveInfo driveInfo) {

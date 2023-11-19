@@ -26,6 +26,9 @@ namespace DiskObserver.ViewModels {
         public ReactiveCommand<Unit, Unit> MoveForwardCommand =>
                                         ReactiveCommand.Create(TryMoveForward);
 
+        public ReactiveCommand<Unit, Unit> Test =>
+                                ReactiveCommand.Create(() => { });
+
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
         QuickAccessModel _quickAccessModel;
 
@@ -47,6 +50,56 @@ namespace DiskObserver.ViewModels {
             {
                 _isEnable = value;
                 OnPropertyChanged(nameof(IsEnable));
+            }
+        }
+
+        private SortMode _sortMode = SortMode.Name;
+        public SortMode SortMode {
+            get => _sortMode;
+            set
+            {
+                _sortMode = value;
+                OnPropertyChanged(nameof(SortMode));
+            }
+        }
+
+        private GroupMode _groupMode = GroupMode.None;
+        public GroupMode GroupMode {
+            get => _groupMode;
+            set
+            {
+                _groupMode = value;
+                OnPropertyChanged(nameof(GroupMode));
+            }
+        }
+
+        private ViewMode _viewMode = ViewMode.Details;
+        public ViewMode ViewMode {
+            get => _viewMode;
+            set
+            {
+                _viewMode = value;
+                OnPropertyChanged(nameof(ViewMode));
+            }
+        }
+
+        private bool _isSortAscending = true;
+        public bool IsSortAscending {
+            get => _isSortAscending;
+            set
+            {
+                _isSortAscending = value;
+                OnPropertyChanged(nameof(IsSortAscending));
+            }
+        }
+
+        private bool _isGroupAscending = true;
+        public bool IsGroupAscending {
+            get => _isGroupAscending;
+            set
+            {
+                _isGroupAscending = value;
+                OnPropertyChanged(nameof(IsGroupAscending));
             }
         }
 
@@ -258,11 +311,5 @@ namespace DiskObserver.ViewModels {
             string forwardPath = _forwardStack.Pop();
             TryMoveToPath(forwardPath, MoveMode.Forward);
         }
-    }
-
-    public enum MoveMode {
-        Normal = 0,
-        Back = 1,
-        Forward = 2,
     }
 }

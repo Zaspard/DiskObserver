@@ -40,7 +40,13 @@
 								  BorderThickness="1,0" BorderBrush="Gray">
 					</GridSplitter>
 
-					<view:FilesViewer Grid.Column="2"/>
+					<view:FilesViewer Grid.Column="2"
+									  ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
+									  SortMode="{Binding SortMode}"
+									  GroupMode="{Binding GroupMode}"
+									  ViewMode="{Binding ViewMode}"
+									  IsSortAscending="{Binding IsSortAscending}"
+									  IsGroupAscending="{Binding IsGroupAscending}"/>
 				</Grid>
 			</Border>
         </Grid>

@@ -62,14 +62,32 @@ namespace DiskObserver.Model.Implementation {
             }
         }
 
-
-        private long _size;
+        private string _type = "Folder";
+        public string Type {
+            get => _type;
+            private set
+            {
+                _type = value;
+                OnPropertyChanged(nameof(Type));
+            }
+        }
+        private long _size = 0;
         public long Size {
             get => _size;
             private set
             {
                 _size = value;
                 OnPropertyChanged(nameof(Size));
+            }
+        }
+
+        private DateTime _lastWrite;
+        public DateTime LastWrite {
+            get => _lastWrite;
+            private set
+            {
+                _lastWrite = value;
+                OnPropertyChanged(nameof(LastWrite));
             }
         }
 
@@ -89,6 +107,8 @@ namespace DiskObserver.Model.Implementation {
 
             Name = aDirectoryInfo.Name;
             IsVisible = !aDirectoryInfo.Attributes.HasFlag(FileAttributes.Hidden);
+
+            LastWrite = aDirectoryInfo.CreationTime;
         }
 
         public void Dispose() {
@@ -337,8 +357,7 @@ namespace DiskObserver.Model.Implementation {
         }
 
         private void SystemWatcher_Changed(object sender, FileSystemEventArgs e) {
-
-            if (IgnoreAllNotify)
+            if (IgnoreAllNotify || !_inited)
                 return;
 
             var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.Name);
