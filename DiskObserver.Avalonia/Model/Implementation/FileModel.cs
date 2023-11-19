@@ -8,7 +8,7 @@ using System.IO;
 #nullable enable
 
 namespace DiskObserver.Model.Implementation {
-    public class FileModel : BaseModel, IFile {
+    public class FileModel : BaseModel, IFile, ICanRename {
         public bool IsVisibleInTree => false;
 
         private string _name = "";
@@ -16,6 +16,11 @@ namespace DiskObserver.Model.Implementation {
             get => _name;
             set
             {
+                if (_name == value || (_isRenameMode && !TryRename(value))) {
+                    IsRenameMode = false;
+                    return;
+                }
+
                 _name = value;
                 OnPropertyChanged(nameof(Name));
             }
@@ -147,6 +152,48 @@ namespace DiskObserver.Model.Implementation {
 
             Size = fileInfo.Length;
             LastWrite = fileInfo.LastWriteTime;
+        }
+
+        bool TryRename(string newName) {
+
+            if (ParentPhysicalObject == null || ParentPhysicalObject.PhysicalObjects == null)
+                return false;
+
+
+            var haveFileNotifyer = ParentPhysicalObject as IHaveFileNotifyer;
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = true;
+
+            foreach (var item in ParentPhysicalObject.PhysicalObjects) {
+
+                if (item == this)
+                    continue;
+
+                if (string.Equals(item.Name, newName, StringComparison.OrdinalIgnoreCase)) {
+                    IsRenameMode = false;
+                    return false;
+                }
+            }
+
+            string newPath = Path.Remove(Path.Length - Name.Length) + newName;
+
+            try {
+                FileInfo fileInfo = new FileInfo(Path);
+                fileInfo.MoveTo(newPath);
+            }
+            catch (Exception ex) {
+                _ = ex;
+                IsRenameMode = false;
+                return false;
+            }
+
+            ChangePath(newPath);
+
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = false;
+
+            IsRenameMode = false;
+            return true;
         }
     }
 }

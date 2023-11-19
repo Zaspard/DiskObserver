@@ -1,23 +1,27 @@
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Reactive;
+using Avalonia.Threading;
 using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
 using DiskObserver.ViewModels;
 using DynamicData;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Threading;
 
 namespace DiskObserver.View {
     public partial class FilesViewer : UserControl {
 
-        public static readonly StyledProperty<IEnumerable<IPhysicalObject>> ItemsSourceProperty
-                             = AvaloniaProperty.Register<FilesViewer, IEnumerable<IPhysicalObject>>(nameof(ItemsSource), defaultBindingMode: BindingMode.TwoWay);
+        public static readonly StyledProperty<ObservableCollection<IPhysicalObject>> ItemsSourceProperty
+                             = AvaloniaProperty.Register<FilesViewer, ObservableCollection<IPhysicalObject>>(nameof(ItemsSource), defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly StyledProperty<SortMode> SortModeProperty
                              = AvaloniaProperty.Register<FilesViewer, SortMode>(nameof(SortMode), SortMode.Name, defaultBindingMode: BindingMode.TwoWay);
@@ -34,7 +38,7 @@ namespace DiskObserver.View {
         public static readonly StyledProperty<bool> IsGroupAscendingProperty
                              = AvaloniaProperty.Register<FilesViewer, bool>(nameof(IsGroupAscending), defaultBindingMode: BindingMode.TwoWay);
 
-        public IEnumerable<IPhysicalObject> ItemsSource {
+        public ObservableCollection<IPhysicalObject> ItemsSource {
             get => GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
         }
@@ -62,27 +66,25 @@ namespace DiskObserver.View {
             get => GetValue(IsGroupAscendingProperty);
             set => SetValue(IsGroupAscendingProperty, value);
         }
-
-
         static FilesViewer() {
 
             ItemsSourceProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<IEnumerable<IPhysicalObject>>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<ObservableCollection<IPhysicalObject>>>((e) => ItemsSourcePropertyChanged(e)));
 
             SortModeProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<SortMode>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<SortMode>>((e) => ViewPropertyChanged(e.Sender as FilesViewer)));
 
             GroupModeProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<GroupMode>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<GroupMode>>((e) => ViewPropertyChanged(e.Sender as FilesViewer)));
 
             ViewModeProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<ViewMode>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<ViewMode>>((e) => ViewPropertyChanged(e.Sender as FilesViewer)));
 
             IsSortAscendingProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>((e) => ViewPropertyChanged(e.Sender as FilesViewer)));
 
             IsGroupAscendingProperty.Changed.Subscribe(
-                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>((e) => ItemsSourcePropertyChanged(e.Sender as FilesViewer)));
+                new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>((e) => ViewPropertyChanged(e.Sender as FilesViewer)));
         }
 
         public FilesViewer() {
@@ -94,15 +96,32 @@ namespace DiskObserver.View {
             if (ViewModel == null)
                 return;
 
-            if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
-                ViewModel.Copy(physicalObject);
+            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
+                return;
+
+            var list = new List<IPhysicalObject>();
+            foreach (var item in listBox.SelectedItems) {
+
+                if (item is IPhysicalObject physicalObject)
+                    list.Add(physicalObject);
+            }
+            ViewModel.Copy(list);
         }
+
         private void Cut_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
                 return;
 
-            if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
-                ViewModel.Cut(physicalObject);
+            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
+                return;
+
+            var list = new List<IPhysicalObject>();
+            foreach (var item in listBox.SelectedItems) {
+
+                if (item is IPhysicalObject physicalObject)
+                    list.Add(physicalObject);
+            }
+            ViewModel.Cut(list);
         }
         private void Paste_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
@@ -122,8 +141,14 @@ namespace DiskObserver.View {
             if (ViewModel == null)
                 return;
 
-            if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
-                ViewModel.DeleteItem(physicalObject);
+            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
+                return;
+
+            foreach (var item in listBox.SelectedItems) {
+
+                if (item is IPhysicalObject physicalObject)
+                    ViewModel.DeleteItem(physicalObject);
+            }
         }
         private void Properties_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
@@ -177,9 +202,50 @@ namespace DiskObserver.View {
                 ViewModel.GroupMode = (GroupMode)res;
             }
         }
+        private void Grid_DoubleTapped(object? sender, TappedEventArgs e) {
+            if (ViewModel == null)
+                return;
+
+            if(sender is Grid grid && grid.DataContext is IPhysicalObject physicalObject) {
+                ViewModel.DisplayPhysicalObject(physicalObject);
+            }
+        }
+
+        private void LixtBox_KeyDown(object? sender, KeyEventArgs e) {
+            if (ViewModel == null)
+                return;
+
+            if (e.Key == Key.Enter && listBox.SelectedItem is IPhysicalObject physicalObject) {
+
+                if (listBox.SelectedItem is ICanRename canRename && canRename.IsRenameMode)
+                    return;
+
+                ViewModel.DisplayPhysicalObject(physicalObject);
+            }
+        }
 
 
-        static void ItemsSourcePropertyChanged(FilesViewer? filesViewer) {
+        static void ItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs<ObservableCollection<IPhysicalObject>> e) {
+
+            if (e.Sender is FilesViewer filesViewer) {
+
+                if (e.OldValue.Value != null) {
+                    e.OldValue.Value.CollectionChanged -= filesViewer.Value_CollectionChanged;
+                }
+
+                if (e.NewValue.Value != null) {
+                    e.NewValue.Value.CollectionChanged += filesViewer.Value_CollectionChanged;
+                }
+
+                filesViewer.RefreshView();
+            }
+        }
+
+        void Value_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            RefreshView();
+        }
+
+        static void ViewPropertyChanged(FilesViewer? filesViewer) {
 
             if (filesViewer == null)
                 return;
@@ -188,7 +254,7 @@ namespace DiskObserver.View {
         }
 
 
-        List<IPhysicalObject> GetCollection() {
+        List<IPhysicalObject>? GetCollection() {
 
             if (ItemsSource == null || ItemsSource.Count() <= 0)
                 return null;
@@ -198,13 +264,69 @@ namespace DiskObserver.View {
 
                 foreach (var item in ItemsSource) {
 
-                    string key = GroupMode switch {
-                        GroupMode.Name => item.Name,
-                        GroupMode.LastWrite => item.LastWrite.ToString(),
-                        GroupMode.Size => item.Size.ToString(),
-                        GroupMode.Type => item.Type,
-                        _ => "",
-                    };
+                    string key = "";
+                    if (GroupMode == GroupMode.Name) {
+                        key = item.Name.First().ToString().ToLower();
+                    }
+                    else if (GroupMode == GroupMode.LastWrite) {
+
+                        DateTime today = DateTime.Today;
+
+                        var yesterday = today.AddDays(-1);
+                        var month = today.Month;
+                        var year = today.Year;
+
+                        if (item.LastWrite >= today)
+                            key = "today";
+                        else if(item.LastWrite >= yesterday)
+                            key = "yesterday";
+                        else if (item.LastWrite.Month >= month)
+                            key = "month";
+                        else if (item.LastWrite.Year >= year)
+                            key = "year";
+                        else
+                            key = "other";
+
+                    }
+                    else if (GroupMode == GroupMode.Type) {
+                        key = item.Type;
+                    }
+                    else if (GroupMode == GroupMode.Size) {
+
+                        if (item is IDirectory)
+                            key = "";
+                        else {
+                             
+                            if (item.Size < 1024) {
+                                key = $"Byte";
+                                goto endif;
+                            }
+
+                            double kbytes = item.Size / 1024.0;
+                            if (kbytes < 1024) {
+                                key = $"KB";
+                                goto endif;
+                            }
+
+                            double mbytes = kbytes / 1024.0;
+                            if (mbytes < 1024) {
+                                key = $"MB";
+                                goto endif;
+                            }
+
+                            double gbytes = mbytes / 1024.0;
+                            if (gbytes < 1024) {
+                                key = $"GB";
+                                goto endif;
+                            }
+
+                            double tbytes = gbytes / 1024.0;
+                            key = $"TB";
+                        }
+
+                    endif:
+                        ;
+                    }
 
                     if (!group.ContainsKey(key))
                         group.Add(key, new());
@@ -245,12 +367,11 @@ namespace DiskObserver.View {
         }
 
         void RefreshView() {
-            listBox.ItemsSource = null;
-            listBox.ItemTemplate = CreateDataTypeSelector();
-            listBox.ItemsSource = GetCollection();
-        }
-
-        private void MenuItem_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e) {
+            Dispatcher.UIThread.Invoke(new Action(() => {
+                listBox.ItemsSource = null;
+                listBox.ItemTemplate = CreateDataTypeSelector();
+                listBox.ItemsSource = GetCollection();
+            }));
         }
     }
 

@@ -10,10 +10,10 @@ using System.Linq;
 #nullable enable
 
 namespace DiskObserver.Model.Implementation {
-    public class DirectoryModel : BaseModel, IDirectory, IHaveFileNotifyer {
+    public class DirectoryModel : BaseModel, IDirectory, IHaveFileNotifyer, ICanRename {
         public bool IsVisibleInTree => true;
         public IPhysicalObject? ParentPhysicalObject { get; private set; }
-        public ObservableCollection<IPhysicalObject>? _physicalObjects { get; set; }
+        ObservableCollection<IPhysicalObject>? _physicalObjects = null;
         public ObservableCollection<IPhysicalObject>? PhysicalObjects {
             get
             {
@@ -132,6 +132,9 @@ namespace DiskObserver.Model.Implementation {
             if (_inited)
                 return;
 
+            if (_physicalObjects == null)
+                _physicalObjects = new();
+
             var aDirectoryInfo = new DirectoryInfo(_path);
 
             DirectoryInfo[]? directoryInfos = null;
@@ -157,7 +160,7 @@ namespace DiskObserver.Model.Implementation {
 
                 foreach (DirectoryInfo directoryInfo in directoryInfos) {
                     DirectoryModel directoryModel = new DirectoryModel(directoryInfo, this);
-                    PhysicalObjects!.Add(directoryModel);
+                    _physicalObjects.Add(directoryModel);
                 }
             }
 
@@ -182,7 +185,7 @@ namespace DiskObserver.Model.Implementation {
             if (fileInfos != null) {
                 foreach (FileInfo fileInfo in fileInfos) {
                     FileModel fileModel = new FileModel(fileInfo, this);
-                    PhysicalObjects!.Add(fileModel);
+                    _physicalObjects.Add(fileModel);
                 }
             }
 
@@ -218,7 +221,10 @@ namespace DiskObserver.Model.Implementation {
 
             string newPath = Path.Remove(Path.Length - Name.Length) + newName;
 
-            IgnoreAllNotify = true;
+            var haveFileNotifyer = ParentPhysicalObject as IHaveFileNotifyer;
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = true;
+
             try {
                 var aDirectoryInfo = new DirectoryInfo(Path);
                 aDirectoryInfo.MoveTo(newPath);
@@ -227,7 +233,9 @@ namespace DiskObserver.Model.Implementation {
                 IsRenameMode = false;
                 return false;
             }
-            IgnoreAllNotify = false;
+
+            if (haveFileNotifyer != null)
+                haveFileNotifyer.IgnoreAllNotify = false;
 
             ChangePath(newPath);
             RefreshPathInInnerItems(this, newPath);
@@ -298,7 +306,7 @@ namespace DiskObserver.Model.Implementation {
 
         private void SystemWatcher_Created(object sender, FileSystemEventArgs e) {
 
-            if (IgnoreAllNotify)
+            if (IgnoreAllNotify || _physicalObjects == null)
                 return;
 
             if (System.IO.Path.Exists(e.FullPath)) {
@@ -327,7 +335,7 @@ namespace DiskObserver.Model.Implementation {
 
                 if (newDirectory != null) {
                     DirectoryModel directoryModel = new DirectoryModel(newDirectory, this);
-                    PhysicalObjects!.Add(directoryModel);
+                    _physicalObjects!.Add(directoryModel);
                     return;
                 }
 
@@ -351,18 +359,22 @@ namespace DiskObserver.Model.Implementation {
 
                 if (newFile != null) {
                     FileModel fileModel = new FileModel(newFile, this);
-                    PhysicalObjects!.Add(fileModel);
+                    _physicalObjects!.Add(fileModel);
                 }
             }
+            OnPropertyChanged(nameof(PhysicalObjects));
         }
 
         private void SystemWatcher_Changed(object sender, FileSystemEventArgs e) {
             if (IgnoreAllNotify || !_inited)
                 return;
 
-            var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.Name);
-            if (item is IFile file) {
-                file.RefreshProperty();
+            if (_physicalObjects != null) {
+
+                var item = _physicalObjects.FirstOrDefault(x => x.Name == e.Name);
+                if (item is IFile file) {
+                    file.RefreshProperty();
+                }
             }
         }
 
@@ -371,19 +383,22 @@ namespace DiskObserver.Model.Implementation {
             if (IgnoreAllNotify)
                 return;
 
-            var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.OldName);
-            if (item != null) {
+            if (_physicalObjects != null) {
 
-                if (item is IDirectory directory) {
+                var item = _physicalObjects.FirstOrDefault(x => x.Name == e.OldName);
+                if (item != null) {
 
-                    directory.IsRenameMode = false;
-                    directory.Name = e.Name;
-                    directory.ChangePath(e.FullPath);
-                    RefreshPathInInnerItems(directory, e.FullPath);
-                }
-                else if (item is IFile file) {
-                    file.Name = e.Name;
-                    file.ChangePath(e.FullPath);
+                    if (item is IDirectory directory) {
+
+                        directory.IsRenameMode = false;
+                        directory.Name = e.Name;
+                        directory.ChangePath(e.FullPath);
+                        RefreshPathInInnerItems(directory, e.FullPath);
+                    }
+                    else if (item is IFile file) {
+                        file.Name = e.Name;
+                        file.ChangePath(e.FullPath);
+                    }
                 }
             }
         }
@@ -393,10 +408,14 @@ namespace DiskObserver.Model.Implementation {
             if (IgnoreAllNotify)
                 return;
 
-            var item = PhysicalObjects?.FirstOrDefault(x => x.Name == e.Name);
-            if (item != null) {
-                item.Dispose();
-                PhysicalObjects!.Remove(item);
+            if (_physicalObjects != null) {
+
+                var item = _physicalObjects.FirstOrDefault(x => x.Name == e.Name);
+                if (item != null) {
+                    item.Dispose();
+                    _physicalObjects.Remove(item);
+                    OnPropertyChanged(nameof(PhysicalObjects));
+                }
             }
         }
     }

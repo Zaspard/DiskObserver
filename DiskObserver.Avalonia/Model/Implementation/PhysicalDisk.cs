@@ -136,15 +136,18 @@ namespace DiskObserver.Model.Implementation {
             if (_inited || !_driveInfo.IsReady)
                 return;
 
+            if (_physicalObjects == null)
+                _physicalObjects = new();
+
             foreach (DirectoryInfo directoryInfo in _driveInfo.RootDirectory.GetDirectories()) {
-                if (!PhysicalObjects.Any(x => x.Path == directoryInfo.FullName)) {
-                    PhysicalObjects.Add(new DirectoryModel(directoryInfo, this));
+                if (!_physicalObjects.Any(x => x.Path == directoryInfo.FullName)) {
+                    _physicalObjects.Add(new DirectoryModel(directoryInfo, this));
                 }
             }
 
             foreach (FileInfo fileInfo in _driveInfo.RootDirectory.GetFiles()) {
-                if (!PhysicalObjects.Any(x => x.Path == fileInfo.FullName)) {
-                    PhysicalObjects.Add(new FileModel(fileInfo, this));
+                if (!_physicalObjects.Any(x => x.Path == fileInfo.FullName)) {
+                    _physicalObjects.Add(new FileModel(fileInfo, this));
                 }
             }
 

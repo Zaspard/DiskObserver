@@ -1,9 +1,10 @@
 ﻿using Avalonia.Data.Converters;
+using Avalonia.Markup.Xaml;
 using System;
 using System.Globalization;
 
 namespace DiskObserver.View.Converters {
-    public class SizeConverter : IValueConverter {
+    public class SizeConverter : MarkupExtension, IValueConverter {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
 
             if (value is long bytes) {
@@ -32,6 +33,14 @@ namespace DiskObserver.View.Converters {
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
             throw new NotImplementedException();
+        }
+
+        public static SizeConverter? sizeConverter = null;
+        public override object ProvideValue(IServiceProvider serviceProvider) {
+            if (sizeConverter == null)
+                sizeConverter = new SizeConverter();
+
+            return sizeConverter;
         }
     }
 }

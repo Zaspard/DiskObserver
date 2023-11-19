@@ -6,13 +6,13 @@
 			 xmlns:converters="clr-namespace:DiskObserver.View.Converters"
 			 xmlns:local="clr-namespace:DiskObserver.View"
 			 xmlns:interface="clr-namespace:DiskObserver.Model.Interface"
+			 xmlns:behaviors="clr-namespace:DiskObserver.Utils.Behaviors"
 			 x:Name="root"
              x:Class="DiskObserver.View.FilesViewer">
 	
 	<UserControl.Resources>
 		
 		<converters:SizeConverter x:Key="SizeConverter"/>
-		<converters:RadioButtonEnumConverter x:Key="RadioButtonEnum"/>
 
 		<ContextMenu x:Key="PhysicalObjectContextMenu">
 			<MenuItem Header="Copy"
@@ -101,7 +101,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
-						  Width="150"
+						  Width="150" DoubleTapped="Grid_DoubleTapped"
 						  RowDefinitions="*,Auto">
 						
 						<Viewbox Grid.Row="0" Width="140" Margin="0,0,10,0">
@@ -110,9 +110,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -129,9 +143,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -147,7 +175,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
-						  Width="100"
+						  Width="100" DoubleTapped="Grid_DoubleTapped"
 						  RowDefinitions="*,Auto">
 
 						<Viewbox Grid.Row="0" Width="90" Margin="0,0,10,0">
@@ -156,9 +184,24 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -175,9 +218,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -193,7 +250,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
-						  Width="50"
+						  Width="50" DoubleTapped="Grid_DoubleTapped"
 						  RowDefinitions="*,Auto">
 
 						<Viewbox Grid.Row="0" Width="40" Margin="0,0,10,0">
@@ -202,9 +259,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -212,7 +283,7 @@
 				<DataTemplate DataType="{x:Type interface:IFile}">
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
-						  Width="50"
+						  Width="50" DoubleTapped="Grid_DoubleTapped"
 						  RowDefinitions="*,Auto">
 
 						<Viewbox Grid.Row="0" Width="40"  Margin="0,0,10,0">
@@ -221,9 +292,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Row="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="0,5,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Row="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -239,6 +324,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
+						  DoubleTapped="Grid_DoubleTapped"
 						  ColumnDefinitions="*,Auto">
 
 						<Viewbox Grid.Column="0" Width="20" Margin="0,0,10,0">
@@ -247,9 +333,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -265,9 +365,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -283,6 +397,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
+						  DoubleTapped="Grid_DoubleTapped"
 						  ColumnDefinitions="*,Auto">
 
 						<Viewbox Grid.Column="0" Width="20" Margin="0,0,10,0">
@@ -291,9 +406,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -301,6 +430,7 @@
 				<DataTemplate DataType="{x:Type interface:IFile}">
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Left"
+						  DoubleTapped="Grid_DoubleTapped"
 						  ColumnDefinitions="*,Auto">
 
 						<Viewbox Grid.Column="0" Width="20"  Margin="0,0,10,0">
@@ -308,10 +438,24 @@
 						</Viewbox>
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1"
+								   IsVisible="{Binding !IsRenameMode}"
 								   ToolTip.Tip="{Binding Name}"
 								   HorizontalAlignment="Center"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+						
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -326,6 +470,7 @@
 				<DataTemplate DataType="{x:Type interface:IDirectory}">
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  DoubleTapped="Grid_DoubleTapped"
 						  Background="Transparent" HorizontalAlignment="Left">
 
 						<Grid.ColumnDefinitions>
@@ -341,14 +486,29 @@
 						</Viewbox>
 
 						<TextBlock Grid.Column="1" Text="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   ToolTip.Tip="{Binding Name}"
 								   Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
 
 				<DataTemplate DataType="{x:Type interface:IFile}">
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}" 
+						  DoubleTapped="Grid_DoubleTapped"
 						  Background="Transparent" HorizontalAlignment="Left">
 
 						<Grid.ColumnDefinitions>
@@ -364,8 +524,22 @@
 						</Viewbox>
 
 						<TextBlock Grid.Column="1" Text="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   ToolTip.Tip="{Binding Name}"
 								   Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
+						
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 						
 						<TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource SizeConverter}}"
 								   Margin="15,0,25,0"/>
@@ -389,6 +563,7 @@
 				<DataTemplate DataType="{x:Type interface:IDirectory}">
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
+						  DoubleTapped="Grid_DoubleTapped"
 						  Background="Transparent" HorizontalAlignment="Left"
 						  ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
 
@@ -397,10 +572,23 @@
 						</Viewbox>
  
 						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   IsVisible="{Binding !IsRenameMode}"
 								   ToolTip.Tip="{Binding Name}"
 								   HorizontalAlignment="Left"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1" Grid.Row="0"
+								 Background="Transparent" Margin="5,0,0,0">
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 					</Grid>
 				</DataTemplate>
@@ -415,10 +603,24 @@
 						</Viewbox>
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
+								   IsVisible="{Binding !IsRenameMode}"
 								   ToolTip.Tip="{Binding Name}"
 								   HorizontalAlignment="Left"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1" Grid.Row="0"
+								 Background="Transparent" Margin="5,0,0,0">
+							
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 						<TextBlock Text="{Binding Type}" Grid.Column="1" Grid.Row="1"
 								   ToolTip.Tip="{Binding Type}"
@@ -441,6 +643,7 @@
 
 					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource PhysicalObjectContextMenu}"
 						  Background="Transparent" HorizontalAlignment="Stretch"
+						  DoubleTapped="Grid_DoubleTapped"
 						  ColumnDefinitions="40, *, Auto" RowDefinitions="*,Auto">
 
 						<Viewbox Grid.Column="0" Grid.RowSpan="2" Width="40" Margin="0,0,10,0">
@@ -449,9 +652,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Left"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1" Grid.Row="0"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 						<TextBlock Text="{Binding LastWrite}" Grid.Column="2" Grid.Row="0"
 								   ToolTip.Tip="{Binding Name}"
@@ -473,9 +690,23 @@
 
 						<TextBlock Text="{Binding Name}" Grid.Column="1" Grid.Row="0"
 								   ToolTip.Tip="{Binding Name}"
+								   IsVisible="{Binding !IsRenameMode}"
 								   HorizontalAlignment="Left"
 								   Background="Transparent" Margin="5,0,0,0"
 								   TextTrimming="CharacterEllipsis"/>
+
+						<TextBox IsVisible="{Binding IsRenameMode}"
+								 ToolTip.Tip="{Binding Name}"
+								 HorizontalAlignment="Left"
+								 Grid.Column="1" Grid.Row="0"
+								 Background="Transparent" Margin="5,0,0,0">
+
+							<Interaction.Behaviors>
+								<behaviors:KeyDownBehavior Key="Enter">
+									<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+								</behaviors:KeyDownBehavior>
+							</Interaction.Behaviors>
+						</TextBox>
 
 						<TextBlock Text="{Binding Type}" Grid.Column="1" Grid.Row="1"
 								   ToolTip.Tip="{Binding Type}"
@@ -508,6 +739,7 @@
 		<ListBox x:Name="listBox" 
 				 Background="White" 
 				 SelectionMode="Multiple"
+				 KeyDown="LixtBox_KeyDown"
 				 Grid.IsSharedSizeScope="True"/>
 	</Grid>
 

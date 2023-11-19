@@ -26,9 +26,6 @@ namespace DiskObserver.ViewModels {
         public ReactiveCommand<Unit, Unit> MoveForwardCommand =>
                                         ReactiveCommand.Create(TryMoveForward);
 
-        public ReactiveCommand<Unit, Unit> Test =>
-                                ReactiveCommand.Create(() => { });
-
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
         QuickAccessModel _quickAccessModel;
 
@@ -184,6 +181,9 @@ namespace DiskObserver.ViewModels {
         }
         internal void Copy(IEnumerable<IPhysicalObject> physicalObjects) {
             Clipboard.Clear();
+            foreach (var item in physicalObjects) {
+                Clipboard.Add((item is IFile, item.Path, false));
+            }
         }
         internal void Cut(IPhysicalObject physicalObject) {
             Clipboard.Clear();
@@ -191,6 +191,9 @@ namespace DiskObserver.ViewModels {
         }
         internal void Cut(IEnumerable<IPhysicalObject> physicalObjects) {
             Clipboard.Clear();
+            foreach (var item in physicalObjects) {
+                Clipboard.Add((item is IFile, item.Path, true));
+            }
         }
         internal void Paste(IPhysicalObject physicalObject) {
 
@@ -205,15 +208,17 @@ namespace DiskObserver.ViewModels {
 
                 if (isFile) {
 
+                    string nameItem = Path.GetFileName(path);
+                    string destPath = Path.Combine(physicalObject.Path, nameItem);
+                    File.Copy(path, destPath, true);
 
-                    //string nameItem = Path.GetFileName(path);
-                    //string sourcePath = Path.Combine(physicalObject.Path, nameItem);
-                    //File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
-                    //FileInfo fileInfo = new FileInfo(sourcePath);
-                    //
-                    //if (removeFlag) {
-                    //
-                    //}
+                    FileInfo fileInfo = new FileInfo(destPath);
+                    FileModel fileModel = new FileModel(fileInfo, physicalObject);
+                    physicalObject.PhysicalObjects!.Add(fileModel);
+
+                    if (removeFlag) {
+                        File.Delete(path);
+                    }
                 }
                 else {
 
