@@ -1,5 +1,6 @@
 ﻿using DiskObserver.Avalonia.Model.Interface;
 using DiskObserver.Avalonia.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -71,6 +72,16 @@ namespace DiskObserver.Avalonia.Model.Implementation {
             }
         }
 
+        public DateTime _lastWrite;
+        public DateTime LastWrite { 
+            get => _lastWrite;
+            set
+            {
+                _lastWrite = value;
+                OnPropertyChanged(nameof(LastWrite));   
+            }
+        }
+
         public ObservableCollection<IPhysicalObject>? PhysicalObjects { get; set; } = null;
         public IPhysicalObject? ParentPhysicalObject{ get; private set; }
         public FileModel(FileInfo aFileInfo, IPhysicalObject _parentObject) {
@@ -135,6 +146,7 @@ namespace DiskObserver.Avalonia.Model.Implementation {
                 Format = fileInfo.Extension.Substring(1, fileInfo.Extension.Length - 1);
 
             Size = fileInfo.Length;
+            LastWrite = fileInfo.LastWriteTime;
         }
     }
 }

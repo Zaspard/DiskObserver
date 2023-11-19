@@ -18,62 +18,60 @@
 
 	</UserControl.Resources>
 
-	<Grid>
 
-		<ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
-                 BorderBrush="LightGray"
-				 SelectionMode="Multiple"
-				 Grid.IsSharedSizeScope="True">
+	<ListBox ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
+			 BorderBrush="LightGray"
+			 SelectionMode="Multiple"
+			 Grid.IsSharedSizeScope="True">
 
-			<ListBox.DataTemplates>
+		<ListBox.DataTemplates>
 
-				<DataTemplate DataType="{x:Type model:DirectoryModel}">
-					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource DirectoryContextMenu}" Background="Transparent">
+			<DataTemplate DataType="{x:Type model:DirectoryModel}">
+				<Grid Margin="5,0,2,0" ContextMenu="{StaticResource DirectoryContextMenu}" Background="Transparent">
 
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
-							<ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
-							<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-							<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-						</Grid.ColumnDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
+						<ColumnDefinition Width="*" MaxWidth="250"  SharedSizeGroup="NameGroup"/>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+					</Grid.ColumnDefinitions>
 
-						<Viewbox Grid.Row="0" Width="14">
-							<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
-						</Viewbox>
+					<Viewbox Grid.Row="0" Width="14">
+						<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+					</Viewbox>
 
-						<TextBlock Grid.Column="1" Text="{Binding Name}"
-                                   ToolTip.Tip="{Binding Name}"
-                                   Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
+					<TextBlock Grid.Column="1" Text="{Binding Name}"
+							   ToolTip.Tip="{Binding Name}"
+							   Margin="5,0,15,0"  TextTrimming="WordEllipsis"/>
 
-					</Grid>
-				</DataTemplate>
+				</Grid>
+			</DataTemplate>
 
-				<DataTemplate DataType="{x:Type model:FileModel}">
-					<Grid Margin="5,0,2,0" ContextMenu="{StaticResource FileContextMenu}" Background="Transparent">
+			<DataTemplate DataType="{x:Type model:FileModel}">
+				<Grid Margin="5,0,2,0" ContextMenu="{StaticResource FileContextMenu}" Background="Transparent">
 
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
-							<ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
-							<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
-							<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
-						</Grid.ColumnDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" MaxWidth="25"  SharedSizeGroup="IconGroup"/>
+						<ColumnDefinition Width="*" MaxWidth="250" SharedSizeGroup="NameGroup"/>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="SizeGroup"/>
+						<ColumnDefinition Width="Auto" SharedSizeGroup="FormatGroup"/>
+					</Grid.ColumnDefinitions>
 
-						<Viewbox Grid.Row="0" Width="14">
-							<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
-						</Viewbox>
+					<Viewbox Grid.Row="0" Width="14">
+						<Path Fill="Black" Data="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" />
+					</Viewbox>
 
-						<TextBlock Grid.Column="1" Text="{Binding Name}"
-                                   ToolTip.Tip="{Binding Name}"
-                                   Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
-						<TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource SizeConverter}}"
-                                   Margin="15,0,25,0"/>
-						<TextBlock Grid.Column="3" Text="{Binding Format}"
-                                   Margin="15,0,0,0"/>
+					<TextBlock Grid.Column="1" Text="{Binding Name}"
+							   ToolTip.Tip="{Binding Name}"
+							   Margin="5,0,15,0" TextTrimming="WordEllipsis"/>
+					<TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource SizeConverter}}"
+							   Margin="15,0,25,0"/>
+					<TextBlock Grid.Column="3" Text="{Binding Format}"
+							   Margin="15,0,0,0"/>
 
-					</Grid>
-				</DataTemplate>
+				</Grid>
+			</DataTemplate>
 
-			</ListBox.DataTemplates>
-		</ListBox>
-	</Grid>
+		</ListBox.DataTemplates>
+	</ListBox>
 </UserControl>
