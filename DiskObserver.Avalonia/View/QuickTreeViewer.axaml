@@ -144,7 +144,7 @@
 				
 				<Separator/>
 				
-				<MenuItem Header="Properties"
+				<MenuItem Header="Properties"  IsEnabled="False"
 						  PointerReleased="Properties_PointerReleased"/>
 				
 				<Separator/>

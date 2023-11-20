@@ -27,20 +27,25 @@
 			
 			<Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="Gray">
 				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="8"/>
-						<ColumnDefinition Width="4*"/>
-					</Grid.ColumnDefinitions>
-					
-					<view:QuickTreeViewer  Grid.Column="0"/>
 
-					<GridSplitter  Grid.Column="1"
-								  ResizeBehavior="PreviousAndNext"
-								  BorderThickness="1,0" BorderBrush="Gray">
-					</GridSplitter>
+					<!--Bruh https://github.com/AvaloniaUI/Avalonia/discussions/6773-->
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" converters:ColumnDefinition.IsVisible="{Binding IsShowQuickTree}"/>
+						<ColumnDefinition Width="8"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<view:QuickTreeViewer  Grid.Column="0" 
+										   IsVisible="{Binding IsShowQuickTree}"/>
+
+					
+					<GridSplitter Grid.Column="1"
+								  IsVisible="{Binding IsShowQuickTree}"
+								  ResizeDirection="Columns"
+								  BorderThickness="1,0" BorderBrush="Gray"/>
 
 					<view:FilesViewer Grid.Column="2"
+									  Width="NaN"
 									  ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
 									  SortMode="{Binding SortMode}"
 									  GroupMode="{Binding GroupMode}"

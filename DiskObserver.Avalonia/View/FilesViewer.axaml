@@ -34,7 +34,7 @@
 
 			<Separator/>
 
-			<MenuItem Header="Properties"
+			<MenuItem Header="Properties" IsEnabled="False"
 					  PointerReleased="Properties_PointerReleased"/>
 
 			<Separator/>
@@ -84,7 +84,8 @@
 				<RadioButton GroupName="GroupMode" IsChecked="{Binding !IsGroupAscending}" Content="GroupDescending"/>
 			</MenuItem>
 
-			<MenuItem Header="Properties" PointerReleased="Properties_PointerReleased"/>
+			<MenuItem Header="Properties" IsEnabled="False"
+					  PointerReleased="Properties_PointerReleased"/>
 			
 		</ContextMenu>
 		
@@ -740,6 +741,7 @@
 				 Background="White" 
 				 SelectionMode="Multiple"
 				 KeyDown="LixtBox_KeyDown"
+				 SelectedItems="{Binding SelectedItemsInFilesViewer}"
 				 Grid.IsSharedSizeScope="True"/>
 	</Grid>
 

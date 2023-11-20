@@ -92,36 +92,20 @@ namespace DiskObserver.View {
         }
 
         DiskObserverVM? ViewModel => DataContext as DiskObserverVM;
+
+        //TODO:Refactor all
         private void Copy_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
                 return;
 
-            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
-                return;
-
-            var list = new List<IPhysicalObject>();
-            foreach (var item in listBox.SelectedItems) {
-
-                if (item is IPhysicalObject physicalObject)
-                    list.Add(physicalObject);
-            }
-            ViewModel.Copy(list);
+            ViewModel.CutSelectedItems();
         }
 
         private void Cut_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
                 return;
 
-            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
-                return;
-
-            var list = new List<IPhysicalObject>();
-            foreach (var item in listBox.SelectedItems) {
-
-                if (item is IPhysicalObject physicalObject)
-                    list.Add(physicalObject);
-            }
-            ViewModel.Cut(list);
+            ViewModel.CutSelectedItems();
         }
         private void Paste_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
@@ -141,15 +125,9 @@ namespace DiskObserver.View {
             if (ViewModel == null)
                 return;
 
-            if (listBox.SelectedItems == null || listBox.SelectedItems.Count <= 0)
-                return;
-
-            foreach (var item in listBox.SelectedItems) {
-
-                if (item is IPhysicalObject physicalObject)
-                    ViewModel.DeleteItem(physicalObject);
-            }
+            ViewModel.DeleteSelectedItems();
         }
+
         private void Properties_PointerReleased(object? sender, PointerReleasedEventArgs e) {
             if (ViewModel == null)
                 return;
@@ -161,8 +139,7 @@ namespace DiskObserver.View {
             if (ViewModel == null)
                 return;
 
-            if (sender is MenuItem menuItem && menuItem.DataContext is IPhysicalObject physicalObject)
-                ViewModel.AddPhysicalObjectToQuickAccess(physicalObject);
+            ViewModel.AddSelectedItemsToQuickAccess();
         }
 
         private void RemoveFromQuickAccess_PointerReleased(object? sender, PointerReleasedEventArgs e) {
@@ -202,6 +179,7 @@ namespace DiskObserver.View {
                 ViewModel.GroupMode = (GroupMode)res;
             }
         }
+
         private void Grid_DoubleTapped(object? sender, TappedEventArgs e) {
             if (ViewModel == null)
                 return;

@@ -1,10 +1,12 @@
-﻿using DiskObserver.Model.Implementation;
+﻿using Avalonia.Collections;
+using DiskObserver.Model.Implementation;
 using DiskObserver.Model.Interface;
 using DiskObserver.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -14,17 +16,37 @@ using System.Reactive;
 namespace DiskObserver.ViewModels {
     public sealed class DiskObserverVM : BaseModel, IDisposable {
         public ReactiveCommand<IPhysicalObject, Unit> DisplayPhysicalObjectCommand => 
-                                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));
+                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));
         public ReactiveCommand<IPhysicalObject, Unit> RenameItemCommand =>
-                                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => EnableRenameModeInItem(physicalObject));     
+                                        ReactiveCommand.Create((IPhysicalObject physicalObject) => EnableRenameModeInItem(physicalObject));     
         public ReactiveCommand<string, Unit> TryMoveToPathCommand =>
-                                                        ReactiveCommand.Create((string path) => TryMoveToPath(path));
+                                        ReactiveCommand.Create((string path) => TryMoveToPath(path));
         public ReactiveCommand<Unit, Unit> MoveUpCommand =>
-                                                ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
+                                        ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
         public ReactiveCommand<Unit, Unit> MoveBackCommand =>
-                                                ReactiveCommand.Create(TryMoveBack);
+                                        ReactiveCommand.Create(TryMoveBack);
         public ReactiveCommand<Unit, Unit> MoveForwardCommand =>
-                                        ReactiveCommand.Create(TryMoveForward);
+                                        ReactiveCommand.Create(TryMoveForward);    
+        public ReactiveCommand<Unit, Unit> PinSelectedItemsCommand =>
+                                        ReactiveCommand.Create(AddSelectedItemsToQuickAccess);
+        public ReactiveCommand<Unit, Unit> CopySelectedItemsCommand =>
+                                        ReactiveCommand.Create(CopySelectedItems);
+        public ReactiveCommand<Unit, Unit> CutSelectedItemsCommand =>
+                                        ReactiveCommand.Create(CutSelectedItems);
+        public ReactiveCommand<Unit, Unit> PasteSelectedItemsCommand =>
+                                        ReactiveCommand.Create(PasteToFirstSelectedItem); 
+        public ReactiveCommand<Unit, Unit> DeleteSelectedItemsCommand =>
+                                        ReactiveCommand.Create(DeleteSelectedItems);    
+        public ReactiveCommand<Unit, Unit> RenameFirstSelectedItemCommand =>
+                                        ReactiveCommand.Create(() => EnableRenameModeInItem(SelectedItemsInFilesViewer.FirstOrDefault()));
+        public ReactiveCommand<Unit, Unit> CreateNewFolderCommand =>
+                                        ReactiveCommand.Create(CreateNewFolder);      
+        public ReactiveCommand<Unit, Unit> SelectAllCommand =>
+                                        ReactiveCommand.Create(SelectAllItems);
+        public ReactiveCommand<Unit, Unit> UnselectAllCommand =>
+                                        ReactiveCommand.Create(SelectedItemsInFilesViewer.Clear);        
+        public ReactiveCommand<Unit, Unit> ReverseSelectCommand =>
+                                        ReactiveCommand.Create(ReverseSelectedItems);
 
         public ObservableCollection<IPhysicalObject> PhysicalObjects { get; set; } = new();
         QuickAccessModel _quickAccessModel;
@@ -39,6 +61,16 @@ namespace DiskObserver.ViewModels {
             }
         }
 
+        private AvaloniaList<IPhysicalObject> _selectedItemsInFilesViewer = new();
+        public AvaloniaList<IPhysicalObject> SelectedItemsInFilesViewer {
+            get => _selectedItemsInFilesViewer;
+            set
+            {
+                _selectedItemsInFilesViewer = value;
+                OnPropertyChanged(nameof(SelectedItemsInFilesViewer));
+            }
+        }
+
         private bool _isEnable = true;
         public bool IsEnable
         {
@@ -50,6 +82,7 @@ namespace DiskObserver.ViewModels {
             }
         }
 
+        public IEnumerable<SortMode> SortModes { get; set; } = Enum.GetValues(typeof(SortMode)).Cast<SortMode>().ToList();
         private SortMode _sortMode = SortMode.Name;
         public SortMode SortMode {
             get => _sortMode;
@@ -70,6 +103,7 @@ namespace DiskObserver.ViewModels {
             }
         }
 
+        public IEnumerable<ViewMode> ViewModes { get; set; } = Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>().ToList();
         private ViewMode _viewMode = ViewMode.Details;
         public ViewMode ViewMode {
             get => _viewMode;
@@ -107,6 +141,16 @@ namespace DiskObserver.ViewModels {
             {
                 _isDisplayedHead = value;
                 OnPropertyChanged(nameof(IsDisplayedHead));
+            }
+        }
+
+        private bool _isShowQuickTree = true;
+        public bool IsShowQuickTree {
+            get => _isShowQuickTree;
+            set
+            {
+                _isShowQuickTree = value;
+                OnPropertyChanged(nameof(IsShowQuickTree));
             }
         }
 
@@ -150,12 +194,24 @@ namespace DiskObserver.ViewModels {
         }
 
         internal void AddPhysicalObjectToQuickAccess(IPhysicalObject item) {
+            if (item is not IDirectory)
+                return;
+
             if (!_quickAccessModel.PhysicalObjects.Contains(item)) {
                 _quickAccessModel.PhysicalObjects.Add(item);
             }
         }
 
+        internal void AddSelectedItemsToQuickAccess() {
+            foreach (var item in SelectedItemsInFilesViewer) {
+                AddPhysicalObjectToQuickAccess(item);
+            }
+        }
+
         internal void RemovePhysicalObjectFromQuickAccess(IPhysicalObject item) {
+            if (item is not IDirectory)
+                return;
+
             if (_quickAccessModel.PhysicalObjects.Contains(item)) {
                 _quickAccessModel.PhysicalObjects.Remove(item);
             }
@@ -179,22 +235,33 @@ namespace DiskObserver.ViewModels {
             Clipboard.Clear();
             Clipboard.Add((physicalObject is IFile, physicalObject.Path, false));
         }
-        internal void Copy(IEnumerable<IPhysicalObject> physicalObjects) {
+
+        internal void CopySelectedItems() {
             Clipboard.Clear();
-            foreach (var item in physicalObjects) {
+            foreach (var item in SelectedItemsInFilesViewer) {
                 Clipboard.Add((item is IFile, item.Path, false));
             }
         }
+
         internal void Cut(IPhysicalObject physicalObject) {
             Clipboard.Clear();
             Clipboard.Add((physicalObject is IFile, physicalObject.Path, true));
         }
-        internal void Cut(IEnumerable<IPhysicalObject> physicalObjects) {
+
+        internal void CutSelectedItems() {
             Clipboard.Clear();
-            foreach (var item in physicalObjects) {
+            foreach (var item in SelectedItemsInFilesViewer) {
                 Clipboard.Add((item is IFile, item.Path, true));
             }
         }
+
+        internal void PasteToFirstSelectedItem() {
+            IPhysicalObject physicalObject = SelectedItemsInFilesViewer.FirstOrDefault() ?? DisplayedPhysicalObject;
+            if (physicalObject is IDirectory) {
+                Paste(physicalObject);
+            }
+        }
+
         internal void Paste(IPhysicalObject physicalObject) {
 
             if (Clipboard.Count <= 0)
@@ -257,6 +324,11 @@ namespace DiskObserver.ViewModels {
 
         internal void DeleteItem(IPhysicalObject physicalObject) {
             physicalObject.Delete();
+        }        
+        internal void DeleteSelectedItems() {
+            foreach (var item in SelectedItemsInFilesViewer) {
+                DeleteItem(item);
+            }
         }
 
         void TryMoveToPath(string path, MoveMode moveMode = MoveMode.Normal) {
@@ -315,6 +387,43 @@ namespace DiskObserver.ViewModels {
 
             string forwardPath = _forwardStack.Pop();
             TryMoveToPath(forwardPath, MoveMode.Forward);
+        }
+
+        void CreateNewFolder() {
+
+            string path = Path.Combine(DisplayedPhysicalObject.Path, "NewFolder");
+            int i = 1;
+            while (Directory.Exists(path)) {
+                path = Path.Combine(DisplayedPhysicalObject.Path, $"NewFolder({i++})");
+            }
+
+            try {
+                Directory.CreateDirectory(path);
+            }
+            catch (Exception ex) {
+                _ = ex;
+            }
+        }
+
+        void SelectAllItems() {
+            foreach(var item in DisplayedPhysicalObject.PhysicalObjects) {
+
+                if(!SelectedItemsInFilesViewer.Contains(item)) {
+                    SelectedItemsInFilesViewer.Add(item);
+                }
+            }
+        }
+
+        void ReverseSelectedItems() {
+            foreach (var item in DisplayedPhysicalObject.PhysicalObjects) {
+
+                if (!SelectedItemsInFilesViewer.Contains(item)) {
+                    SelectedItemsInFilesViewer.Add(item);
+                }
+                else {
+                    SelectedItemsInFilesViewer.Remove(item);
+                }
+            }
         }
     }
 }

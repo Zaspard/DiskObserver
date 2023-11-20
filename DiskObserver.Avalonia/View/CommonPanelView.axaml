@@ -9,13 +9,38 @@
 		<ResourceDictionary>
 
 			<ControlTheme x:Key="BaseButtonTheme" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-				<Setter Property="Height" Value="60"/>
-				<Setter Property="Width" Value="60"/>
+				<Setter Property="Height" Value="100"/>
+				<Setter Property="Width" Value="100"/>
 				<Setter Property="Margin" Value="5"/>
 				<Setter Property="Background" Value="Transparent"/>
 				<Setter Property="BorderThickness" Value="1"/>
 				<Setter Property="BorderBrush" Value="Black"/>
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
 			</ControlTheme>
+
+			<ControlTheme x:Key="MinBaseButtonTheme" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Width" Value="100"/>
+				<Setter Property="Margin" Value="2"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="BorderBrush" Value="Black"/>
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+			</ControlTheme>
+
+			<ControlTheme x:Key="MinBaseToggleButtonTheme" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+				<Setter Property="Height" Value="30"/>
+				<Setter Property="Width" Value="100"/>
+				<Setter Property="Margin" Value="2"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="BorderBrush" Value="Black"/>
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+			</ControlTheme>
+			
 			
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -26,30 +51,87 @@
 
 			<ScrollViewer HorizontalScrollBarVisibility="Auto">
 				<StackPanel Orientation="Horizontal">
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
-					<Button Theme="{StaticResource BaseButtonTheme}"/>
+					
+					<Button Theme="{StaticResource BaseButtonTheme}" Content="Pin" 
+							Command="{Binding PinSelectedItemsCommand}"/>
+
+					<StackPanel Margin="0,3,0,0">
+						<Button Theme="{StaticResource MinBaseButtonTheme}"
+								Content="Copy"
+								Command="{Binding CopySelectedItemsCommand}"/>
+						
+						<Button Theme="{StaticResource MinBaseButtonTheme}" 
+								Content="Paste"
+								Command="{Binding PasteSelectedItemsCommand}"/>
+						
+						<Button Theme="{StaticResource MinBaseButtonTheme}"
+								Content="Cut"
+								Command="{Binding CutSelectedItemsCommand}"/>
+					</StackPanel>
+
+					<StackPanel Margin="0,3,0,0">
+						<Button Theme="{StaticResource MinBaseButtonTheme}" Content="Copy path" IsEnabled="false"/>
+						<Button Theme="{StaticResource MinBaseButtonTheme}" Content="Move into" IsEnabled="false"/>
+						<Button Theme="{StaticResource MinBaseButtonTheme}" Content="Copy into" IsEnabled="false"/>
+					</StackPanel>
+					
+					<Button Theme="{StaticResource BaseButtonTheme}" 
+							Content="Delete"
+							Command="{Binding DeleteSelectedItemsCommand}"/>
+					
+					<StackPanel Margin="0,3,0,0">
+						
+						<Button Theme="{StaticResource MinBaseButtonTheme}" 
+								Content="Rename"
+								Command="{Binding RenameFirstSelectedItemCommand}"/>
+						
+						<Button Theme="{StaticResource MinBaseButtonTheme}" 
+								Content="New folder"
+								Command="{Binding CreateNewFolderCommand}"/>
+						
+						<Button Theme="{StaticResource MinBaseButtonTheme}" Content="Property" IsEnabled="false"/>
+					</StackPanel>
+
+					<StackPanel Margin="0,3,0,0">
+						<Button Theme="{StaticResource MinBaseButtonTheme}" 
+								Width="150"  Content="Select all"
+								Command="{Binding SelectAllCommand}"/>
+						<Button Theme="{StaticResource MinBaseButtonTheme}"
+								Width="150"  Content="Unselect all"
+								Command="{Binding UnselectAllCommand}"/>
+						<Button Theme="{StaticResource MinBaseButtonTheme}" 
+								Width="150"  Content="Reverse select"
+								Command="{Binding ReverseSelectCommand}"/>
+					</StackPanel>
 				</StackPanel>
 			</ScrollViewer>
 		</TabItem>
 		
 		<TabItem x:Name="View" Header="View">
 			<StackPanel Orientation="Horizontal">
-				<Button Theme="{StaticResource BaseButtonTheme}"/>
-				<Button Theme="{StaticResource BaseButtonTheme}"/>
-				<Button Theme="{StaticResource BaseButtonTheme}"/>
-				<Button Theme="{StaticResource BaseButtonTheme}"/>
+				
+				<StackPanel>
+					
+					<ToggleButton Theme="{StaticResource MinBaseToggleButtonTheme}" IsChecked="{Binding IsShowQuickTree}"
+								  Height="50" Width="150" Content="Show quick tree"/>
+
+					<ToggleButton Theme="{StaticResource MinBaseToggleButtonTheme}" 
+								  Height="50" Width="150" Content="Show content" IsEnabled="false"/>
+				</StackPanel>
+
+				<StackPanel>
+					
+					<Grid RowDefinitions="*,*" Width="150">
+						<TextBlock Text="View mode" HorizontalAlignment="Stretch"/>
+						<ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding ViewModes}" SelectedItem="{Binding ViewMode}"/>
+					</Grid>
+
+					<Grid RowDefinitions="*,*" Width="150">
+						<TextBlock Text="Sort mode" HorizontalAlignment="Stretch"/>
+						<ComboBox Grid.Row="1" HorizontalAlignment="Stretch" ItemsSource="{Binding SortModes}" SelectedItem="{Binding SortMode}"/>
+					</Grid>
+					
+				</StackPanel>
 			</StackPanel>
 		</TabItem>
 	</TabControl>
