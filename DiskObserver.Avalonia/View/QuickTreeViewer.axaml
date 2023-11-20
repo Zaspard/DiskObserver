@@ -1,0 +1,193 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:converters="clr-namespace:DiskObserver.View.Converters"
+			 xmlns:behaviors="clr-namespace:DiskObserver.Utils.Behaviors"
+			 xmlns:interface="clr-namespace:DiskObserver.Model.Interface"
+			 xmlns:model="clr-namespace:DiskObserver.Model.Implementation"
+			 x:Name="root"
+			 x:Class="DiskObserver.View.QuickTreeViewer">
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			
+			<converters:SizeConverter x:Key="SizeConverter"/>
+			<converters:NameConverter x:Key="NameConverter"/>
+
+			<DataTemplate x:Key="PhysicalDiskDataTemplate" DataType="{x:Type interface:IPhysicalDisk}">
+				<Grid Margin="0,0,2,0" Background="Transparent">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="25"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Viewbox Grid.Row="0" Width="14">
+						<Path Fill="Black" Data="M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M12,4A6,6 0 0,0 6,10C6,13.31 8.69,16 12.1,16L11.22,13.77C10.95,13.29 11.11,12.68 11.59,12.4L12.45,11.9C12.93,11.63 13.54,11.79 13.82,12.27L15.74,14.69C17.12,13.59 18,11.9 18,10A6,6 0 0,0 12,4M12,9A1,1 0 0,1 13,10A1,1 0 0,1 12,11A1,1 0 0,1 11,10A1,1 0 0,1 12,9M7,18A1,1 0 0,0 6,19A1,1 0 0,0 7,20A1,1 0 0,0 8,19A1,1 0 0,0 7,18M12.09,13.27L14.58,19.58L17.17,18.08L12.95,12.77L12.09,13.27Z" />
+					</Viewbox>
+
+					<TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5,0,0,0"/>
+
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="PointerPressed">
+							<InvokeCommandAction Command="{Binding DataContext.DisplayPhysicalObjectCommand, ElementName=root}"
+												 CommandParameter="{Binding}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+				</Grid>
+			</DataTemplate>
+			
+			<DataTemplate x:Key="DirectoryDataTemplate" DataType="{x:Type interface:IDirectory}">
+				<Grid Margin="0,0,2,0" Background="Transparent"
+					  ContextMenu="{StaticResource DictionatyContextMenu}">
+					
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="25"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Viewbox Grid.Row="0" Width="14">
+						<Path Fill="Black" Data="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+					</Viewbox>
+
+					<TextBlock Grid.Column="1" Text="{Binding Name}" IsVisible="{Binding !IsRenameMode}" Margin="5,0,0,0"/>
+
+					<TextBox Grid.Column="1" IsVisible="{Binding IsRenameMode}" Margin="5,0,0,0">
+						<Interaction.Behaviors>
+							<behaviors:KeyDownBehavior Key="Enter">
+								<behaviors:UpdateValueInProperty PropertyName="Text" Value="{Binding Name}"/>
+							</behaviors:KeyDownBehavior>
+						</Interaction.Behaviors>
+					</TextBox>
+					
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="PointerPressed">
+							<InvokeCommandAction Command="{Binding DataContext.DisplayPhysicalObjectCommand, ElementName=root}"
+												 CommandParameter="{Binding}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+				</Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="QuickAccessTemplate" DataType="{x:Type model:QuickAccessModel}">
+				<TextBlock Grid.Column="1" Text="Quick access" Margin="5,0,0,0"/>
+			</DataTemplate>
+
+			<ControlTheme x:Key="DefaultTreeViewItem" TargetType="TreeViewItem">
+				<Setter Property="Padding" Value="3,5" />
+				<Setter Property="Background" Value="Transparent" />
+				<Setter Property="IsVisible" Value="{ReflectionBinding IsVisibleInTree}" />
+				<Setter Property="Template">
+					<ControlTemplate>
+						<StackPanel>
+							<Border Name="SelectionBorder"
+									Background="{TemplateBinding Background}"
+									BorderBrush="{TemplateBinding BorderBrush}"
+									BorderThickness="{TemplateBinding BorderThickness}"
+									CornerRadius="{TemplateBinding CornerRadius}"
+									IsVisible="{TemplateBinding IsVisible}"
+									Focusable="True"
+									TemplatedControl.IsTemplateFocusTarget="True">
+								<Grid Name="PART_Header"
+									  Margin="{TemplateBinding Level, Mode=OneWay, Converter={StaticResource LeftMarginConverter}}"
+									  ColumnDefinitions="16, *">
+									<ToggleButton Name="PART_ExpandCollapseChevron"
+												  Focusable="False"
+												  Background="Transparent"
+												  IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+												  Theme="{StaticResource SimpleTreeViewItemToggleButtonTheme}" />
+									<ContentPresenter Name="PART_HeaderPresenter"
+													  Grid.Column="1"
+													  Background="Transparent"
+													  Padding="{TemplateBinding Padding}"
+													  HorizontalContentAlignment="{TemplateBinding HorizontalAlignment}"
+													  Content="{TemplateBinding Header}"
+													  ContentTemplate="{TemplateBinding HeaderTemplate}"
+													  Focusable="False" />
+								</Grid>
+							</Border>
+							<ItemsPresenter Name="PART_ItemsPresenter"
+											IsVisible="{TemplateBinding IsExpanded}"
+											ItemsPanel="{TemplateBinding ItemsPanel}" />
+						</StackPanel>
+					</ControlTemplate>
+				</Setter>
+
+				<Style Selector="^:selected /template/ Border#SelectionBorder">
+					<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush3}" />
+				</Style>
+
+				<Style Selector="^:empty /template/ ToggleButton#PART_ExpandCollapseChevron">
+					<Setter Property="IsVisible" Value="False" />
+				</Style>
+			</ControlTheme>
+
+
+			<ContextMenu x:Key="DictionatyContextMenu">
+				<MenuItem Header="Copy"
+						  PointerReleased="Copy_PointerReleased"/>
+				
+				<MenuItem Header="Cut"
+						  PointerReleased="Cut_PointerReleased"/>
+				
+				<MenuItem Header="Paste"
+						  PointerReleased="Paste_PointerReleased"/>
+				
+				<Separator/>
+
+				<MenuItem Header="Delete"
+						  PointerReleased="Delete_PointerReleased"/>
+				
+				<MenuItem Header="Rename"
+						  PointerReleased="Rename_PointerReleased"/>
+				
+				<Separator/>
+				
+				<MenuItem Header="Properties"  IsEnabled="False"
+						  PointerReleased="Properties_PointerReleased"/>
+				
+				<Separator/>
+				
+				<MenuItem Header="Add to quick access"
+						  PointerReleased="AddToQuickAccess_PointerReleased"/>
+				
+				<MenuItem Header="Remove from quick access"
+						  PointerReleased="RemoveFromQuickAccess_PointerReleased"/>
+			</ContextMenu>
+
+		</ResourceDictionary>
+	</UserControl.Resources>
+
+
+	<Grid>
+		<TreeView Background="White"
+				  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}"
+				  ItemContainerTheme="{StaticResource DefaultTreeViewItem}"
+				  SelectedItem="{Binding DisplayedPhysicalObject, Mode=OneWay}">
+
+			<TreeView.DataTemplates>
+
+				<!-- TODO: https://github.com/AvaloniaUI/Avalonia/issues/10379 -->
+				<TreeDataTemplate DataType="{x:Type interface:IPhysicalDisk}" 
+								  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}">
+					<ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource PhysicalDiskDataTemplate}"/>
+				</TreeDataTemplate>
+
+				<!-- TODO: https://github.com/AvaloniaUI/Avalonia/issues/10379 -->
+				<TreeDataTemplate DataType="{x:Type interface:IDirectory}"
+								  ItemsSource="{Binding PhysicalObjects, Converter={StaticResource NameConverter}}">
+					<ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource DirectoryDataTemplate}"/>
+				</TreeDataTemplate>
+
+				<TreeDataTemplate DataType="{x:Type model:QuickAccessModel}"
+								  ItemsSource="{Binding PhysicalObjects}">
+					<ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource QuickAccessTemplate}"/>
+				</TreeDataTemplate>
+
+			</TreeView.DataTemplates>
+		</TreeView>
+
+
+	</Grid>
+</UserControl>

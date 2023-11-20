@@ -1,0 +1,70 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:DiskObserver.View.Converters"
+        xmlns:view="clr-namespace:DiskObserver.View"
+		x:Class="DiskObserver.MainWindow"
+		MinWidth="200"
+		MinHeight="600"
+        Title="DiskObserver">
+
+    <Window.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+		
+        <Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			
+			<view:CommonPanelView Grid.Row="0"/>
+			<view:QuickPanelView Grid.Row="1"/>
+			
+			<Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="Gray">
+				<Grid>
+
+					<!--Bruh https://github.com/AvaloniaUI/Avalonia/discussions/6773-->
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" converters:ColumnDefinition.IsVisible="{Binding IsShowQuickTree}"/>
+						<ColumnDefinition Width="8"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<view:QuickTreeViewer  Grid.Column="0" 
+										   IsVisible="{Binding IsShowQuickTree}"/>
+
+					
+					<GridSplitter Grid.Column="1"
+								  IsVisible="{Binding IsShowQuickTree}"
+								  ResizeDirection="Columns"
+								  BorderThickness="1,0" BorderBrush="Gray"/>
+
+					<view:FilesViewer Grid.Column="2"
+									  Width="NaN"
+									  ItemsSource="{Binding DisplayedPhysicalObject.PhysicalObjects}"
+									  SortMode="{Binding SortMode}"
+									  GroupMode="{Binding GroupMode}"
+									  ViewMode="{Binding ViewMode}"
+									  IsSortAscending="{Binding IsSortAscending}"
+									  IsGroupAscending="{Binding IsGroupAscending}"/>
+				</Grid>
+			</Border>
+        </Grid>
+		
+		
+        <Grid IsVisible="{Binding !IsEnable}"
+              Opacity="{Binding IsEnable, Converter={StaticResource BoolToOpacityConverter}}"
+              Background="LightGray">
+
+            <ProgressBar Minimum="0" Maximum="100"
+                         IsIndeterminate="True" 
+                         Height="20" VerticalAlignment="Bottom" 
+                         BorderBrush="LightGray" BorderThickness="1"/>
+        </Grid>
+    </Grid>
+</Window>

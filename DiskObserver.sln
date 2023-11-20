@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32427.441
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiskObserver", "DiskObserver\DiskObserver.csproj", "{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiskObserver.Tests", "DiskObserver.Tests\DiskObserver.Tests.csproj", "{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiskObserver", "DiskObserver.Avalonia\DiskObserver.csproj", "{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,22 +13,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Debug|x64.ActiveCfg = Debug|x64
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Debug|x64.Build.0 = Debug|x64
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Release|x64.ActiveCfg = Release|x64
-		{3D0BFD80-06AA-45FC-8D0D-2888B6C4A0D8}.Release|x64.Build.0 = Release|x64
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Debug|x64.ActiveCfg = Debug|x64
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Debug|x64.Build.0 = Debug|x64
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Release|x64.ActiveCfg = Release|Any CPU
-		{D3DC7B82-122B-47FD-B04B-E58D40FD66A3}.Release|x64.Build.0 = Release|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Debug|x64.Build.0 = Debug|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|x64.ActiveCfg = Release|Any CPU
+		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
