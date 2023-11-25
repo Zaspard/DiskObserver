@@ -6,7 +6,6 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -19,13 +18,13 @@ namespace DiskObserver.ViewModels {
                                         ReactiveCommand.Create((IPhysicalObject physicalObject) => DisplayPhysicalObject(physicalObject));
         public ReactiveCommand<IPhysicalObject, Unit> RenameItemCommand =>
                                         ReactiveCommand.Create((IPhysicalObject physicalObject) => EnableRenameModeInItem(physicalObject));     
-        public ReactiveCommand<string, Unit> TryMoveToPathCommand =>
+        public ReactiveCommand<string, bool> TryMoveToPathCommand =>
                                         ReactiveCommand.Create((string path) => TryMoveToPath(path));
         public ReactiveCommand<Unit, Unit> MoveUpCommand =>
                                         ReactiveCommand.Create(() => DisplayPhysicalObject(DisplayedPhysicalObject?.ParentPhysicalObject));
-        public ReactiveCommand<Unit, Unit> MoveBackCommand =>
+        public ReactiveCommand<Unit, bool> MoveBackCommand =>
                                         ReactiveCommand.Create(TryMoveBack);
-        public ReactiveCommand<Unit, Unit> MoveForwardCommand =>
+        public ReactiveCommand<Unit, bool> MoveForwardCommand =>
                                         ReactiveCommand.Create(TryMoveForward);    
         public ReactiveCommand<Unit, Unit> PinSelectedItemsCommand =>
                                         ReactiveCommand.Create(AddSelectedItemsToQuickAccess);
@@ -331,9 +330,9 @@ namespace DiskObserver.ViewModels {
             }
         }
 
-        void TryMoveToPath(string path, MoveMode moveMode = MoveMode.Normal) {
+        bool TryMoveToPath(string path, MoveMode moveMode = MoveMode.Normal) {
             if (path == DisplayedPhysicalObject?.Path)
-                return;
+                return false;
 
             if (Directory.Exists(path)) {
 
@@ -341,16 +340,22 @@ namespace DiskObserver.ViewModels {
                 IPhysicalObject physicalObject = PhysicalObjects?.FirstOrDefault(x => x.Path == root) as IPhysicalDisk;
                 if (physicalObject != null) {
 
-                    var paths = path.Remove(0, root.Length).Split(Path.DirectorySeparatorChar);
-                    foreach (var p in paths) {
-
-                        physicalObject = physicalObject.PhysicalObjects?.FirstOrDefault(x => string.Equals(x.Name, p, StringComparison.OrdinalIgnoreCase));
-                        if (physicalObject == null)
-                            break;
-                    }
-
-                    if (physicalObject != null) {
+                    if (string.Equals(physicalObject.Path, path, StringComparison.OrdinalIgnoreCase)) {
                         DisplayPhysicalObject(physicalObject, moveMode);
+                    }
+                    else {
+
+                        var paths = path.Remove(0, root.Length).Split(Path.DirectorySeparatorChar);
+                        foreach (var p in paths) {
+
+                            physicalObject = physicalObject.PhysicalObjects?.FirstOrDefault(x => string.Equals(x.Name, p, StringComparison.OrdinalIgnoreCase));
+                            if (physicalObject == null)
+                                break;
+                        }
+
+                        if (physicalObject != null) {
+                            DisplayPhysicalObject(physicalObject, moveMode);
+                        }
                     }
                 }
             }
@@ -361,14 +366,16 @@ namespace DiskObserver.ViewModels {
                 //TODO: Refresh
                 OnPropertyChanged(nameof(DisplayedPhysicalObject));
             }
+
+            return true;
         }
 
         Stack<string> _backStack = new();
         Stack<string> _forwardStack = new();
-        void TryMoveBack() {
+        bool TryMoveBack() {
 
             if (_backStack.Count <= 0)
-                return;
+                return false;
 
             string backPath = _backStack.Pop();
 
@@ -377,16 +384,16 @@ namespace DiskObserver.ViewModels {
                 _forwardStack.Push(nowPath);
             }
 
-            TryMoveToPath(backPath, MoveMode.Back);
+            return TryMoveToPath(backPath, MoveMode.Back);
         }
 
-        void TryMoveForward() {
+        bool TryMoveForward() {
 
             if (_forwardStack.Count <= 0)
-                return;
+                return false;
 
             string forwardPath = _forwardStack.Pop();
-            TryMoveToPath(forwardPath, MoveMode.Forward);
+            return TryMoveToPath(forwardPath, MoveMode.Forward);
         }
 
         void CreateNewFolder() {
@@ -406,6 +413,9 @@ namespace DiskObserver.ViewModels {
         }
 
         void SelectAllItems() {
+            if (DisplayedPhysicalObject == null)
+                return;
+
             foreach(var item in DisplayedPhysicalObject.PhysicalObjects) {
 
                 if(!SelectedItemsInFilesViewer.Contains(item)) {
@@ -415,6 +425,9 @@ namespace DiskObserver.ViewModels {
         }
 
         void ReverseSelectedItems() {
+            if (DisplayedPhysicalObject == null)
+                return;
+
             foreach (var item in DisplayedPhysicalObject.PhysicalObjects) {
 
                 if (!SelectedItemsInFilesViewer.Contains(item)) {

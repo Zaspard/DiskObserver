@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32427.441
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiskObserver", "DiskObserver.Avalonia\DiskObserver.csproj", "{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiskObserver.Test", "DiskObserver.Test\DiskObserver.Test.csproj", "{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|x64.ActiveCfg = Release|Any CPU
 		{ECFCFB14-DF22-47B0-AE72-9D0865C9AF69}.Release|x64.Build.0 = Release|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF49DC7A-8AAC-4BA6-BF28-5B54B355E018}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
